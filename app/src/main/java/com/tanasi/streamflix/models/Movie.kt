@@ -15,6 +15,7 @@ class Movie(
     var id: String = "",
     var title: String = "",
     var overview: String? = null,
+    releasedRaw: String? = null,
     released: String? = null,
     var runtime: Int? = null,
     var trailer: String? = null,
@@ -33,6 +34,7 @@ class Movie(
     val recommendations: List<Show> = listOf(),
 ) : Show, WatchItem, AppAdapter.Item {
 
+    var releasedRaw = releasedRaw ?: released
     var released = released?.toCalendar()
     override var isFavorite: Boolean = false
     override var isWatched: Boolean = false
@@ -41,6 +43,17 @@ class Movie(
     @Embedded
     override var watchHistory: WatchItem.WatchHistory? = null
 
+    // Add these fields for continue watching direct resume
+    var lastWatchedSourceId: String? = null
+    var lastWatchedUrl: String? = null
+
+    // Legacy fields for database migration compatibility (marked as ignored)
+    @Ignore
+    var lastEngagementTimeUtcMillis: Long? = null
+    @Ignore
+    var lastPlaybackPositionMillis: Long? = null
+    @Ignore
+    var durationMillis: Long? = null
 
     fun isSame(movie: Movie): Boolean {
         if (isFavorite != movie.isFavorite) return false
@@ -58,15 +71,14 @@ class Movie(
         return this
     }
 
-
     @Ignore
     override lateinit var itemType: AppAdapter.Type
-
 
     fun copy(
         id: String = this.id,
         title: String = this.title,
         overview: String? = this.overview,
+        releasedRaw: String? = this.releasedRaw,
         released: String? = this.released?.format("yyyy-MM-dd"),
         runtime: Int? = this.runtime,
         trailer: String? = this.trailer,
@@ -82,6 +94,7 @@ class Movie(
         id,
         title,
         overview,
+        releasedRaw,
         released,
         runtime,
         trailer,
@@ -114,6 +127,7 @@ class Movie(
         if (directors != other.directors) return false
         if (cast != other.cast) return false
         if (recommendations != other.recommendations) return false
+        if (releasedRaw != other.releasedRaw) return false
         if (released != other.released) return false
         if (isFavorite != other.isFavorite) return false
         if (isWatched != other.isWatched) return false
@@ -137,6 +151,7 @@ class Movie(
         result = 31 * result + directors.hashCode()
         result = 31 * result + cast.hashCode()
         result = 31 * result + recommendations.hashCode()
+        result = 31 * result + (releasedRaw?.hashCode() ?: 0)
         result = 31 * result + (released?.hashCode() ?: 0)
         result = 31 * result + isFavorite.hashCode()
         result = 31 * result + isWatched.hashCode()

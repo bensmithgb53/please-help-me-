@@ -41,6 +41,7 @@ import retrofit2.http.Path
 import retrofit2.http.Url
 import java.util.Locale
 import java.util.concurrent.TimeUnit
+import androidx.preference.PreferenceManager
 
 object AniWorldProvider : Provider {
 
@@ -75,6 +76,16 @@ object AniWorldProvider : Provider {
 
 
     private fun scheduleUpdateWorker(context: Context) {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        val autoUpdateDisabled = prefs.getBoolean("disable_auto_update", false)
+        val aniworldUpdatesEnabled = true // (add a toggle if you want)
+
+        if (autoUpdateDisabled || !aniworldUpdatesEnabled) {
+            // Cancel any existing work if updates are disabled
+            androidx.work.WorkManager.getInstance(context).cancelUniqueWork("AniWorldUpdateTvShowWorker")
+            return
+        }
+
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
@@ -83,7 +94,7 @@ object AniWorldProvider : Provider {
             .setConstraints(constraints)
             .build()
 
-        WorkManager.getInstance(context).enqueueUniqueWork(
+        androidx.work.WorkManager.getInstance(context).enqueueUniqueWork(
             "AniWorldUpdateTvShowWorker",
             ExistingWorkPolicy.KEEP,
             workRequest

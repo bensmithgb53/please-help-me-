@@ -4,14 +4,14 @@
 
     <item>
         <shape android:shape="rectangle">
-            <solid android:color="#1E2129" />
+            <solid android:color="#000000" />
         </shape>
     </item>
 
     <item
         android:width="320dp"
-        android:height="180dp"
-        android:drawable="@mipmap/ic_banner_foreground"
+        android:height="320dp"
+        android:drawable="@drawable/logo"
         android:gravity="center" />
 
 </layer-list>

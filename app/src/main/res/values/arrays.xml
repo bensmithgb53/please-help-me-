@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="type_options">
+        <item>All</item>
+        <item>Movie</item>
+        <item>TV Show</item>
+    </string-array>
+    <string-array name="service_options">
+        <item>All</item>
+        <item>Netflix</item>
+        <item>Amazon</item>
+        <item>Disney+</item>
+        <item>Hulu</item>
+        <item>Apple+</item>
+        <item>HBO</item>
+    </string-array>
+</resources> 

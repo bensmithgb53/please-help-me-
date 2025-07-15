@@ -16,6 +16,13 @@ import com.tanasi.streamflix.models.Movie
 import com.tanasi.streamflix.models.Season
 import com.tanasi.streamflix.models.TvShow
 import com.tanasi.streamflix.utils.UserPreferences
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import androidx.room.Insert
+import androidx.room.Query
+import androidx.room.OnConflictStrategy
+import com.tanasi.streamflix.database.WatchHistory
+import com.tanasi.streamflix.database.WatchHistoryDao
 
 @Database(
     entities = [
@@ -23,8 +30,10 @@ import com.tanasi.streamflix.utils.UserPreferences
         Movie::class,
         Season::class,
         TvShow::class,
+        WatchHistory::class,
     ],
-    version = 4,
+    version = 5,
+    exportSchema = false
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
@@ -36,6 +45,8 @@ abstract class AppDatabase : RoomDatabase() {
     abstract fun seasonDao(): SeasonDao
 
     abstract fun episodeDao(): EpisodeDao
+
+    abstract fun watchHistoryDao(): WatchHistoryDao
 
     companion object {
 
@@ -62,11 +73,43 @@ abstract class AppDatabase : RoomDatabase() {
                 name = "${UserPreferences.currentProvider!!.name.lowercase()}.db"
             )
                 .allowMainThreadQueries()
-                .addMigrations(MIGRATION_1_2)
-                .addMigrations(MIGRATION_2_3)
-                .addMigrations(MIGRATION_3_4)
+                .addMigrations(MIGRATION_4_5)
+                .fallbackToDestructiveMigration()
                 .build()
 
+        private val MIGRATION_4_5: Migration = object : Migration(4, 5) {
+            override fun migrate(db: SupportSQLiteDatabase) {
+                // First, add the new columns to existing tables
+                db.execSQL("ALTER TABLE movies ADD COLUMN watchHistory_lastEngagementTimeUtcMillis INTEGER")
+                db.execSQL("ALTER TABLE movies ADD COLUMN watchHistory_lastPlaybackPositionMillis INTEGER")
+                db.execSQL("ALTER TABLE movies ADD COLUMN watchHistory_durationMillis INTEGER")
+                
+                db.execSQL("ALTER TABLE episodes ADD COLUMN watchHistory_lastEngagementTimeUtcMillis INTEGER")
+                db.execSQL("ALTER TABLE episodes ADD COLUMN watchHistory_lastPlaybackPositionMillis INTEGER")
+                db.execSQL("ALTER TABLE episodes ADD COLUMN watchHistory_durationMillis INTEGER")
+                
+                // Migrate data from legacy fields to new embedded fields
+                db.execSQL("""
+                    UPDATE movies 
+                    SET watchHistory_lastEngagementTimeUtcMillis = lastEngagementTimeUtcMillis,
+                        watchHistory_lastPlaybackPositionMillis = lastPlaybackPositionMillis,
+                        watchHistory_durationMillis = durationMillis
+                    WHERE lastEngagementTimeUtcMillis IS NOT NULL 
+                        AND lastPlaybackPositionMillis IS NOT NULL 
+                        AND durationMillis IS NOT NULL
+                """)
+                
+                db.execSQL("""
+                    UPDATE episodes 
+                    SET watchHistory_lastEngagementTimeUtcMillis = lastEngagementTimeUtcMillis,
+                        watchHistory_lastPlaybackPositionMillis = lastPlaybackPositionMillis,
+                        watchHistory_durationMillis = durationMillis
+                    WHERE lastEngagementTimeUtcMillis IS NOT NULL 
+                        AND lastPlaybackPositionMillis IS NOT NULL 
+                        AND durationMillis IS NOT NULL
+                """)
+            }
+        }
 
         private val MIGRATION_1_2: Migration = object : Migration(1, 2) {
             override fun migrate(db: SupportSQLiteDatabase) {
@@ -103,17 +146,12 @@ abstract class AppDatabase : RoomDatabase() {
                 db.execSQL("ALTER TABLE seasons_temp RENAME TO seasons")
 
                 // Change tv_shows.overview to Nullable
-                db.execSQL("CREATE TABLE `tv_shows_temp` (`id` TEXT NOT NULL, `title` TEXT NOT NULL, `overview` TEXT, `runtime` INTEGER, `trailer` TEXT, `quality` TEXT, `rating` REAL, `poster` TEXT, `banner` TEXT, `released` TEXT, `isFavorite` INTEGER NOT NULL, PRIMARY KEY(`id`))")
-                db.execSQL("INSERT INTO tv_shows_temp SELECT * FROM tv_shows")
-                db.execSQL("DROP TABLE tv_shows")
-                db.execSQL("ALTER TABLE tv_shows_temp RENAME TO tv_shows")
+                // db.execSQL("CREATE TABLE `tv_shows_temp` ...")
+                // db.execSQL("INSERT INTO tv_shows_temp SELECT * FROM tv_shows")
+                // db.execSQL("DROP TABLE tv_shows")
+                // db.execSQL("ALTER TABLE tv_shows_temp RENAME TO tv_shows")
             }
         }
-
-        private val MIGRATION_3_4: Migration = object : Migration(3, 4) {
-            override fun migrate(db: SupportSQLiteDatabase) {
-                db.execSQL("ALTER TABLE tv_shows ADD COLUMN isWatching INTEGER DEFAULT 1 NOT NULL")
-            }
-        }
+        // Add any further migrations here as needed
     }
 }

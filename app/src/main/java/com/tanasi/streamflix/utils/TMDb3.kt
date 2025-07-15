@@ -927,6 +927,7 @@ object TMDb3 {
                         .url(
                             original.url.newBuilder()
                                 .addQueryParameter("api_key", API_KEY)
+                                .addQueryParameter("language", "en")
                                 .build()
                         )
 

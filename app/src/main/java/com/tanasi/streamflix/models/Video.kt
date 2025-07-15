@@ -10,7 +10,7 @@ data class Video(
     val type: String? = null // androidx.media3.common.MimeTypes - https://developer.android.com/reference/kotlin/androidx/media3/common/MimeTypes
 ) {
 
-    sealed class Type : Parcelable {
+    sealed class Type : Parcelable, java.io.Serializable {
         @Parcelize
         data class Movie(
             val id: String,
@@ -34,13 +34,13 @@ data class Video(
                 val title: String,
                 val poster: String?,
                 val banner: String?,
-            ) : Parcelable
+            ) : Parcelable, java.io.Serializable
 
             @Parcelize
             data class Season(
                 val number: Int,
                 val title: String?,
-            ) : Parcelable
+            ) : Parcelable, java.io.Serializable
         }
     }
 

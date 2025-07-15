@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.View
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
@@ -22,10 +23,12 @@ import com.tanasi.streamflix.database.AppDatabase
 import com.tanasi.streamflix.databinding.ActivityMainTvBinding
 import com.tanasi.streamflix.databinding.ContentHeaderMenuMainTvBinding
 import com.tanasi.streamflix.fragments.player.PlayerTvFragment
+import com.tanasi.streamflix.fragments.player.PlayerWebViewFragment
 import com.tanasi.streamflix.ui.UpdateAppTvDialog
 import com.tanasi.streamflix.utils.UserPreferences
 import com.tanasi.streamflix.utils.getCurrentFragment
 import kotlinx.coroutines.launch
+import androidx.preference.PreferenceManager
 
 class MainTvActivity : FragmentActivity() {
 
@@ -115,11 +118,15 @@ class MainTvActivity : FragmentActivity() {
                 when (state) {
                     MainViewModel.State.CheckingUpdate -> {}
                     is MainViewModel.State.SuccessCheckingUpdate -> {
-                        updateAppDialog = UpdateAppTvDialog(this@MainTvActivity, state.newReleases).also {
-                            it.setOnUpdateClickListener { _ ->
-                                if (!it.isLoading) viewModel.downloadUpdate(this@MainTvActivity, state.asset)
+                        val prefs = PreferenceManager.getDefaultSharedPreferences(this@MainTvActivity)
+                        val autoUpdateDisabled = prefs.getBoolean("disable_auto_update", false)
+                        if (!autoUpdateDisabled) {
+                            updateAppDialog = UpdateAppTvDialog(this@MainTvActivity, state.newReleases).also {
+                                it.setOnUpdateClickListener { _ ->
+                                    if (!it.isLoading) viewModel.downloadUpdate(this@MainTvActivity, state.asset)
+                                }
+                                it.show()
                             }
-                            it.show()
                         }
                     }
 
@@ -177,5 +184,25 @@ class MainTvActivity : FragmentActivity() {
     override fun onResume() {
         super.onResume()
         viewModel.checkUpdate()
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        // Check if current fragment is PlayerWebViewFragment and forward key events
+        val currentFragment = getCurrentFragment()
+        if (currentFragment is PlayerWebViewFragment) {
+            // Let the fragment handle the key event
+            return currentFragment.handleKeyEvent(keyCode, event) || super.onKeyDown(keyCode, event)
+        }
+        return super.onKeyDown(keyCode, event)
+    }
+
+    override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
+        // Check if current fragment is PlayerWebViewFragment and forward key events
+        val currentFragment = getCurrentFragment()
+        if (currentFragment is PlayerWebViewFragment) {
+            // Let the fragment handle the key event
+            return currentFragment.handleKeyEvent(keyCode, event) || super.onKeyUp(keyCode, event)
+        }
+        return super.onKeyUp(keyCode, event)
     }
 }

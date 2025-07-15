@@ -37,4 +37,8 @@
         <item>#27856A</item>
         <item>#FF0090</item>
     </array>
+
+    <color name="text_color_secondary">#80FFFFFF</color>
+    <color name="text_color_disabled">#4DFFFFFF</color>
+    <color name="ic_logo_background_color">#0D1C2E</color>
 </resources>

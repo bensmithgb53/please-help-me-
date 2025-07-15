@@ -25,7 +25,7 @@ class GlideCustomModule : AppGlideModule() {
         val clientBuilder = Builder().cache(appCache).readTimeout(30, TimeUnit.SECONDS)
             .connectTimeout(30, TimeUnit.SECONDS)
         val client = clientBuilder.addNetworkInterceptor(
-            HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY)
+            HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.NONE)
         ).build()
 
         val dns = DnsOverHttps.Builder().client(client).url(DNS_QUERY_URL.toHttpUrl()).build()
@@ -40,5 +40,9 @@ class GlideCustomModule : AppGlideModule() {
         registry.replace(
             GlideUrl::class.java, InputStream::class.java, OkHttpUrlLoader.Factory(okHttpClient)
         )
+    }
+
+    override fun isManifestParsingEnabled(): Boolean {
+        return false
     }
 }

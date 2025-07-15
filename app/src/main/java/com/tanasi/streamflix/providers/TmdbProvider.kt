@@ -23,9 +23,8 @@ import com.tanasi.streamflix.utils.safeSubList
 
 object TmdbProvider : Provider {
 
-    override val name = "TMDb"
-    override val logo =
-        "https://upload.wikimedia.org/wikipedia/commons/thumb/8/89/Tmdb.new.logo.svg/1280px-Tmdb.new.logo.svg.png"
+    override val name = "Streams4You"
+    override val logo = ""
     override val language = "en"
 
     override suspend fun getHome(): List<Category> {
@@ -819,6 +818,113 @@ object TmdbProvider : Provider {
         return when {
             server.video != null -> server.video!!
             else -> Extractor.extract(server.src)
+        }
+    }
+
+    suspend fun discoverByGenres(
+        genres: List<String>,
+        type: String, // "Movie", "TV Show", or "All"
+        year: String? = null,
+        page: Int = 1,
+        service: String = "All"
+    ): List<AppAdapter.Item> {
+        if (genres.isEmpty() && year.isNullOrEmpty()) return emptyList()
+        val genreIds = genres.joinToString(",")
+        val providerId = when (service) {
+            "Netflix" -> "8"
+            "Amazon" -> "9"
+            "Disney+" -> "337"
+            "Hulu" -> "15"
+            "Apple+" -> "350"
+            "HBO" -> "384"
+            else -> null
+        }
+        val networkId = when (service) {
+            "Netflix" -> "213"
+            "Amazon" -> "1024"
+            "Disney+" -> "2739"
+            "Hulu" -> "453"
+            "Apple+" -> "2552"
+            "HBO" -> "49"
+            else -> null
+        }
+        return when (type) {
+            "Movie" -> TMDb3.Discover.movie(
+                withGenres = TMDb3.Params.WithBuilder(genreIds),
+                year = year?.toIntOrNull(),
+                page = page,
+                withWatchProviders = providerId?.let { TMDb3.Params.WithBuilder(it) },
+                watchRegion = if (providerId != null) "US" else null
+            ).results.map { movie ->
+                Movie(
+                    id = movie.id.toString(),
+                    title = movie.title,
+                    overview = movie.overview,
+                    released = movie.releaseDate,
+                    rating = movie.voteAverage.toDouble(),
+                    poster = movie.posterPath?.w500,
+                    banner = movie.backdropPath?.original,
+                )
+            }
+            "TV Show" -> TMDb3.Discover.tv(
+                withGenres = TMDb3.Params.WithBuilder(genreIds),
+                firstAirDateYear = year?.toIntOrNull(),
+                page = page,
+                withNetworks = networkId?.let { TMDb3.Params.WithBuilder(it) }
+            ).results.map { tv ->
+                TvShow(
+                    id = tv.id.toString(),
+                    title = tv.name,
+                    overview = tv.overview,
+                    released = tv.firstAirDate,
+                    rating = tv.voteAverage.toDouble(),
+                    poster = tv.posterPath?.w500,
+                    banner = tv.backdropPath?.original,
+                )
+            }
+            "All" -> {
+                val movies = TMDb3.Discover.movie(
+                    withGenres = TMDb3.Params.WithBuilder(genreIds),
+                    year = year?.toIntOrNull(),
+                    page = page,
+                    withWatchProviders = providerId?.let { TMDb3.Params.WithBuilder(it) },
+                    watchRegion = if (providerId != null) "US" else null
+                ).results.map { movie ->
+                    Movie(
+                        id = movie.id.toString(),
+                        title = movie.title,
+                        overview = movie.overview,
+                        released = movie.releaseDate,
+                        rating = movie.voteAverage.toDouble(),
+                        poster = movie.posterPath?.w500,
+                        banner = movie.backdropPath?.original,
+                    )
+                }
+                val tvShows = TMDb3.Discover.tv(
+                    withGenres = TMDb3.Params.WithBuilder(genreIds),
+                    firstAirDateYear = year?.toIntOrNull(),
+                    page = page,
+                    withNetworks = networkId?.let { TMDb3.Params.WithBuilder(it) }
+                ).results.map { tv ->
+                    TvShow(
+                        id = tv.id.toString(),
+                        title = tv.name,
+                        overview = tv.overview,
+                        released = tv.firstAirDate,
+                        rating = tv.voteAverage.toDouble(),
+                        poster = tv.posterPath?.w500,
+                        banner = tv.backdropPath?.original,
+                    )
+                }
+                (movies + tvShows).sortedByDescending {
+                    when (it) {
+                        is Movie -> it.released
+                        is TvShow -> it.released
+                        else -> null
+                    }
+                }
+            }
+            else -> emptyList()
         }
     }
 }

@@ -3,6 +3,7 @@ package com.tanasi.streamflix.activities.main
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.View
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
@@ -13,11 +14,13 @@ import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
+import androidx.preference.PreferenceManager
 import com.tanasi.streamflix.BuildConfig
 import com.tanasi.streamflix.R
 import com.tanasi.streamflix.database.AppDatabase
 import com.tanasi.streamflix.databinding.ActivityMainMobileBinding
 import com.tanasi.streamflix.fragments.player.PlayerMobileFragment
+import com.tanasi.streamflix.fragments.player.PlayerWebViewFragment
 import com.tanasi.streamflix.ui.UpdateAppMobileDialog
 import com.tanasi.streamflix.utils.UserPreferences
 import com.tanasi.streamflix.utils.getCurrentFragment
@@ -88,11 +91,15 @@ class MainMobileActivity : FragmentActivity() {
                 when (state) {
                     MainViewModel.State.CheckingUpdate -> {}
                     is MainViewModel.State.SuccessCheckingUpdate -> {
-                        updateAppDialog = UpdateAppMobileDialog(this@MainMobileActivity, state.newReleases).also {
-                            it.setOnUpdateClickListener { _ ->
-                                if (!it.isLoading) viewModel.downloadUpdate(this@MainMobileActivity, state.asset)
+                        val prefs = PreferenceManager.getDefaultSharedPreferences(this@MainMobileActivity)
+                        val autoUpdateDisabled = prefs.getBoolean("disable_auto_update", false)
+                        if (!autoUpdateDisabled) {
+                            updateAppDialog = UpdateAppMobileDialog(this@MainMobileActivity, state.newReleases).also {
+                                it.setOnUpdateClickListener { _ ->
+                                    if (!it.isLoading) viewModel.downloadUpdate(this@MainMobileActivity, state.asset)
+                                }
+                                it.show()
                             }
-                            it.show()
                         }
                     }
 
@@ -136,5 +143,25 @@ class MainMobileActivity : FragmentActivity() {
         when (val currentFragment = getCurrentFragment()) {
             is PlayerMobileFragment -> currentFragment.onUserLeaveHint()
         }
+    }
+
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        // Check if current fragment is PlayerWebViewFragment and forward key events
+        val currentFragment = getCurrentFragment()
+        if (currentFragment is PlayerWebViewFragment) {
+            // Let the fragment handle the key event
+            return currentFragment.handleKeyEvent(keyCode, event) || super.onKeyDown(keyCode, event)
+        }
+        return super.onKeyDown(keyCode, event)
+    }
+
+    override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
+        // Check if current fragment is PlayerWebViewFragment and forward key events
+        val currentFragment = getCurrentFragment()
+        if (currentFragment is PlayerWebViewFragment) {
+            // Let the fragment handle the key event
+            return currentFragment.handleKeyEvent(keyCode, event) || super.onKeyUp(keyCode, event)
+        }
+        return super.onKeyUp(keyCode, event)
     }
 }

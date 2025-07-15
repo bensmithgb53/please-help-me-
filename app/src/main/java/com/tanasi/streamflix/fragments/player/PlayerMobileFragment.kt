@@ -6,6 +6,8 @@ import android.content.pm.ActivityInfo
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -117,6 +119,12 @@ class PlayerMobileFragment : Fragment() {
         player.play()
     }
 
+    private var aspectRatioLabelHandler: Handler? = null
+    private var aspectRatioLabelRunnable: Runnable? = null
+
+    // Add this property to store the ID of the current video server.
+    private var currentServerId: String? = null
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -128,6 +136,54 @@ class PlayerMobileFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // If videoUrl is provided, play it directly
+        val videoUrl = args.videoUrl
+        val headersArray = args.headers
+        if (!videoUrl.isNullOrEmpty()) {
+            // Log the raw headers array
+            Log.d("PlayerMobileFragment", "Raw headersArray: ${headersArray?.joinToString()}")
+            var headers = headersArray?.associate {
+                val index = it.indexOf(":")
+                if (index != -1) {
+                    it.substring(0, index) to it.substring(index + 1)
+                } else {
+                    it to ""
+                }
+            } ?: emptyMap()
+            // Fallback: if headers are empty, set default User-Agent and Origin/Referer to match WebView extraction
+            if (headers.isEmpty()) {
+                headers = mapOf(
+                    "User-Agent" to "Mozilla/5.0 (Android 10; Mobile; rv:68.0) Gecko/68.0 Firefox/68.0",
+                    "Origin" to "https://vidsrc.su",
+                    "Referer" to "https://vidsrc.su/"
+                )
+            }
+            // Log the final headers map
+            Log.d("PlayerMobileFragment", "Headers: $headers")
+            val mediaItem = MediaItem.Builder()
+                .setUri(Uri.parse(videoUrl))
+                .setMediaMetadata(MediaMetadata.Builder().setTitle(args.title).build())
+                .build()
+            val dataSourceFactory = DefaultHttpDataSource.Factory().apply {
+                setDefaultRequestProperties(headers)
+            }
+            player = ExoPlayer.Builder(requireContext())
+                .setMediaSourceFactory(DefaultMediaSourceFactory(dataSourceFactory))
+                .build()
+            binding.pvPlayer.player = player
+            player.setMediaItem(mediaItem)
+            player.prepare()
+            player.playWhenReady = true
+            // Add error listener for playback failures
+            player.addListener(object : Player.Listener {
+                override fun onPlayerError(error: PlaybackException) {
+                    Toast.makeText(requireContext(), "Playback error: ${error.errorCodeName}", Toast.LENGTH_LONG).show()
+                    Log.e("PlayerMobileFragment", "Playback error", error)
+                }
+            })
+            return
+        }
 
         initializeVideo()
 
@@ -250,12 +306,18 @@ class PlayerMobileFragment : Fragment() {
         }
     }
 
+    override fun onPause() {
+        super.onPause()
+        saveWatchProgress()
+    }
+
     override fun onStop() {
         super.onStop()
-        player.pause()
+        saveWatchProgress()
     }
 
     override fun onDestroyView() {
+        saveWatchProgress()
         super.onDestroyView()
         WindowCompat.getInsetsController(
             requireActivity().window,
@@ -266,7 +328,12 @@ class PlayerMobileFragment : Fragment() {
         }
         requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
         player.release()
-        mediaSession.release()
+        if (::mediaSession.isInitialized) {
+            mediaSession.release()
+        }
+        aspectRatioLabelRunnable?.let { aspectRatioLabelHandler?.removeCallbacks(it) }
+        aspectRatioLabelHandler = null
+        aspectRatioLabelRunnable = null
         _binding = null
     }
 
@@ -352,12 +419,34 @@ class PlayerMobileFragment : Fragment() {
             UserPreferences.playerResize = UserPreferences.playerResize.next()
             binding.pvPlayer.controllerShowTimeoutMs = binding.pvPlayer.controllerShowTimeoutMs
 
+            // Show aspect ratio label
+            val labelView = binding.pvPlayer.controller.binding.tvAspectRatioLabel
+            labelView.text = requireContext().getString(UserPreferences.playerResize.stringRes)
+            labelView.visibility = View.VISIBLE
+            aspectRatioLabelRunnable?.let { aspectRatioLabelHandler?.removeCallbacks(it) }
+            if (aspectRatioLabelHandler == null) aspectRatioLabelHandler = Handler(Looper.getMainLooper())
+            val runnable = Runnable { labelView.visibility = View.GONE }
+            aspectRatioLabelRunnable = runnable
+            aspectRatioLabelHandler?.postDelayed(runnable, 2000)
+
             Toast.makeText(
                 requireContext(),
                 requireContext().getString(UserPreferences.playerResize.stringRes),
                 Toast.LENGTH_SHORT
             ).show()
             binding.pvPlayer.resizeMode = UserPreferences.playerResize.resizeMode
+            binding.pvPlayer.requestLayout()
+            Log.d("PlayerMobileFragment", "Resize mode set to: ${UserPreferences.playerResize.name} (${UserPreferences.playerResize.resizeMode})")
+            val videoFormat = player.videoFormat
+            if (videoFormat != null) {
+                Log.d("PlayerMobileFragment", "Video size: ${videoFormat.width}x${videoFormat.height}, pixel aspect ratio: ${videoFormat.pixelWidthHeightRatio}")
+            } else {
+                Log.d("PlayerMobileFragment", "Video format is null")
+            }
+            val surfaceView = binding.pvPlayer.videoSurfaceView
+            if (surfaceView != null) {
+                Log.d("PlayerMobileFragment", "SurfaceView size: ${surfaceView.width}x${surfaceView.height}")
+            }
         }
 
         binding.pvPlayer.controller.binding.exoSettings.setOnClickListener {
@@ -389,6 +478,9 @@ class PlayerMobileFragment : Fragment() {
     private fun displayVideo(video: Video, server: Video.Server) {
         val currentPosition = player.currentPosition
 
+        // Store the server ID of the video being displayed.
+        currentServerId = server.id
+
         httpDataSource.setDefaultRequestProperties(
             mapOf(
                 "User-Agent" to userAgent,
@@ -408,7 +500,9 @@ class PlayerMobileFragment : Fragment() {
                 })
                 .setMediaMetadata(
                     MediaMetadata.Builder()
-                        .setMediaServerId(server.id)
+                        .setExtras(Bundle().apply {
+                            putString("server_id", server.id)
+                        })
                         .build()
                 )
                 .build()
@@ -434,6 +528,8 @@ class PlayerMobileFragment : Fragment() {
 
         player.addListener(object : Player.Listener {
             override fun onIsPlayingChanged(isPlaying: Boolean) {
+                super.onIsPlayingChanged(isPlaying)
+
                 binding.pvPlayer.keepScreenOn = isPlaying
 
                 val hasUri = player.currentMediaItem?.localConfiguration?.uri
@@ -446,6 +542,13 @@ class PlayerMobileFragment : Fragment() {
                         is Video.Type.Episode -> database.episodeDao().getById(videoType.id)
                     }
 
+                    // Set the server ID before saving the WatchItem
+                    when (watchItem) {
+                        is Movie -> watchItem.lastWatchedSourceId = currentServerId
+                        is Episode -> watchItem.lastWatchedSourceId = currentServerId
+                        else -> {}
+                    }
+
                     when {
                         player.hasStarted() && !player.hasFinished() -> {
                             watchItem?.isWatched = false
@@ -455,12 +558,44 @@ class PlayerMobileFragment : Fragment() {
                                 lastPlaybackPositionMillis = player.currentPosition,
                                 durationMillis = player.duration,
                             )
+                            // Also save to legacy fields for compatibility
+                            when (watchItem) {
+                                is Movie -> {
+                                    watchItem.lastEngagementTimeUtcMillis = System.currentTimeMillis()
+                                    watchItem.lastPlaybackPositionMillis = player.currentPosition
+                                    watchItem.durationMillis = player.duration
+                                }
+                                is Episode -> {
+                                    watchItem.lastEngagementTimeUtcMillis = System.currentTimeMillis()
+                                    watchItem.lastPlaybackPositionMillis = player.currentPosition
+                                    watchItem.durationMillis = player.duration
+                                }
+                                null -> {
+                                    // Do nothing if watchItem is null
+                                }
+                            }
                         }
 
                         player.hasFinished() -> {
                             watchItem?.isWatched = true
                             watchItem?.watchedDate = Calendar.getInstance()
                             watchItem?.watchHistory = null
+                            // Clear legacy fields
+                            when (watchItem) {
+                                is Movie -> {
+                                    watchItem.lastEngagementTimeUtcMillis = null
+                                    watchItem.lastPlaybackPositionMillis = null
+                                    watchItem.durationMillis = null
+                                }
+                                is Episode -> {
+                                    watchItem.lastEngagementTimeUtcMillis = null
+                                    watchItem.lastPlaybackPositionMillis = null
+                                    watchItem.durationMillis = null
+                                }
+                                null -> {
+                                    // Do nothing if watchItem is null
+                                }
+                            }
                         }
                     }
 
@@ -501,8 +636,28 @@ class PlayerMobileFragment : Fragment() {
                 is Video.Type.Movie -> database.movieDao().getById(videoType.id)
                 is Video.Type.Episode -> database.episodeDao().getById(videoType.id)
             }
-            val lastPlaybackPositionMillis = watchItem?.watchHistory
-                ?.let { it.lastPlaybackPositionMillis - 10.seconds.inWholeMilliseconds }
+
+            val lastWatchedSourceId = when (watchItem) {
+                is Movie -> watchItem.lastWatchedSourceId
+                is Episode -> watchItem.lastWatchedSourceId
+                else -> null
+            }
+            Log.d("PlayerResume", "watchItem.lastWatchedSourceId=$lastWatchedSourceId, server.id=${server.id}, lastPlaybackPositionMillis=${watchItem?.watchHistory?.lastPlaybackPositionMillis}")
+
+            // Only resume if the last watched source/server matches the current one
+            val shouldResume = when (watchItem) {
+                is Movie -> watchItem.lastWatchedSourceId == server.id
+                is Episode -> watchItem.lastWatchedSourceId == server.id
+                else -> false
+            }
+
+            val lastPlaybackPositionMillis = if (shouldResume) {
+                watchItem?.watchHistory?.let { it.lastPlaybackPositionMillis - 10.seconds.inWholeMilliseconds }
+            } else {
+                null
+            }
+
+            Log.d("PlayerResume", "shouldResume=$shouldResume, seeking to ${lastPlaybackPositionMillis ?: 0}")
 
             player.seekTo(lastPlaybackPositionMillis ?: 0)
         } else {
@@ -511,6 +666,9 @@ class PlayerMobileFragment : Fragment() {
 
         player.prepare()
         player.play()
+        binding.pvPlayer.resizeMode = UserPreferences.playerResize.resizeMode
+        binding.pvPlayer.requestLayout()
+        Log.d("PlayerMobileFragment", "Initial resize mode: ${UserPreferences.playerResize.name} (${UserPreferences.playerResize.resizeMode})")
     }
 
     private fun enterPIPMode() {
@@ -530,5 +688,139 @@ class PlayerMobileFragment : Fragment() {
 
     private fun ExoPlayer.hasFinished(): Boolean {
         return (this.currentPosition > (this.duration * 0.90))
+    }
+
+    private fun saveWatchProgress() {
+        if (player.playbackState == Player.STATE_IDLE) {
+            Log.w("PlayerMobileFragment", "[SAVE] Not saving progress: player state is IDLE")
+            return
+        }
+
+        val watchItem = when (val videoType = args.videoType) {
+            is Video.Type.Movie -> database.movieDao().getById(videoType.id)
+            is Video.Type.Episode -> database.episodeDao().getById(videoType.id)
+        }
+        if (watchItem == null) {
+            Log.w("PlayerMobileFragment", "[SAVE] Not saving progress: watchItem is null for videoType=${args.videoType}")
+            return
+        }
+
+        val currentMediaItem = player.currentMediaItem
+        val serverId = currentMediaItem?.mediaId
+        val server = servers.find { it.id == serverId } ?: servers.firstOrNull()
+        Log.d("PlayerSave", "server=$server, server.id=${server?.id}, server.src=${server?.src}")
+        // Always save lastWatchedUrl and lastWatchedSourceId
+        when (watchItem) {
+            is Movie -> {
+                watchItem.lastWatchedUrl = server?.src
+                watchItem.lastWatchedSourceId = server?.id
+            }
+            is Episode -> {
+                watchItem.lastWatchedUrl = server?.src
+                watchItem.lastWatchedSourceId = server?.id
+            }
+            else -> {}
+        }
+
+        val currentPosition = player.currentPosition
+        val duration = player.duration
+        val percentWatched = if (duration > 0) currentPosition.toDouble() / duration else Double.NaN
+        val remaining = duration - currentPosition
+        val lastWatchedSourceId = when (watchItem) {
+            is Movie -> watchItem.lastWatchedSourceId
+            is Episode -> watchItem.lastWatchedSourceId
+            else -> null
+        }
+        Log.d("PlayerSave", "Saving: lastWatchedSourceId=$lastWatchedSourceId, lastPlaybackPositionMillis=$currentPosition, duration=$duration, percentWatched=$percentWatched, remaining=$remaining")
+
+        if (currentPosition <= 0 || duration <= 0) {
+            Log.w("PlayerMobileFragment", "[SAVE] Not saving: currentPosition or duration is zero or negative (position=$currentPosition, duration=$duration)")
+            return
+        }
+
+        if (percentWatched.isNaN()) {
+            Log.w("PlayerMobileFragment", "[SAVE] Not saving: percentWatched is NaN (position=$currentPosition, duration=$duration)")
+        }
+
+        // Only mark as finished if both percentWatched >= 0.98 AND less than 30 seconds remain
+        if (percentWatched >= 0.98 && remaining < 30_000) {
+            watchItem.isWatched = true
+            watchItem.watchedDate = Calendar.getInstance()
+            watchItem.watchHistory = null
+            // Clear legacy fields
+            when (watchItem) {
+                is Movie -> {
+                    watchItem.lastEngagementTimeUtcMillis = null
+                    watchItem.lastPlaybackPositionMillis = null
+                    watchItem.durationMillis = null
+                }
+                is Episode -> {
+                    watchItem.lastEngagementTimeUtcMillis = null
+                    watchItem.lastPlaybackPositionMillis = null
+                    watchItem.durationMillis = null
+                }
+                null -> {
+                    // Do nothing if watchItem is null
+                }
+            }
+            Log.i("PlayerMobileFragment", "[SAVE] Marked as finished: id=${(watchItem as? Movie)?.id ?: (watchItem as? Episode)?.id}, percentWatched=$percentWatched, remaining=$remaining")
+        } else {
+            // Always save progress otherwise
+            watchItem.isWatched = false
+            watchItem.watchedDate = null
+            watchItem.watchHistory = WatchItem.WatchHistory(
+                lastEngagementTimeUtcMillis = System.currentTimeMillis(),
+                lastPlaybackPositionMillis = currentPosition,
+                durationMillis = duration,
+            )
+            // Also save to legacy fields for compatibility
+            when (watchItem) {
+                is Movie -> {
+                    watchItem.lastEngagementTimeUtcMillis = System.currentTimeMillis()
+                    watchItem.lastPlaybackPositionMillis = currentPosition
+                    watchItem.durationMillis = duration
+                }
+                is Episode -> {
+                    watchItem.lastEngagementTimeUtcMillis = System.currentTimeMillis()
+                    watchItem.lastPlaybackPositionMillis = currentPosition
+                    watchItem.durationMillis = duration
+                }
+                null -> {
+                    // Do nothing if watchItem is null
+                }
+            }
+            Log.i("PlayerMobileFragment", "[SAVE] Progress saved: id=${(watchItem as? Movie)?.id ?: (watchItem as? Episode)?.id}, position=$currentPosition, duration=$duration, percentWatched=$percentWatched, remaining=$remaining, watchHistory=${watchItem.watchHistory}")
+        }
+
+        when (val videoType = args.videoType) {
+            is Video.Type.Movie -> {
+                val movie = watchItem as Movie
+                if (server != null) {
+                    movie.lastWatchedUrl = server.src
+                    movie.lastWatchedSourceId = server.id
+                }
+                database.movieDao().update(movie)
+            }
+            is Video.Type.Episode -> {
+                val episode = watchItem as Episode
+                if (server != null) {
+                    episode.lastWatchedUrl = server.src
+                    episode.lastWatchedSourceId = server.id
+                }
+                if (percentWatched >= 0.98 && remaining < 30_000) {
+                    database.episodeDao().resetProgressionFromEpisode(videoType.id)
+                }
+                database.episodeDao().update(episode)
+
+                episode.tvShow?.let { tvShow ->
+                    database.tvShowDao().getById(tvShow.id)
+                }?.let { tvShow ->
+                    database.tvShowDao().save(tvShow.copy().apply {
+                        merge(tvShow)
+                        isWatching = true
+                    })
+                }
+            }
+        }
     }
 }

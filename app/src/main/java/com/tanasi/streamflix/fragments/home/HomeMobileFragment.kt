@@ -101,8 +101,13 @@ class HomeMobileFragment : Fragment() {
 
         binding.ivProviderLogo.apply {
             Glide.with(context)
-                .load(UserPreferences.currentProvider?.logo?.takeIf { it.isNotEmpty() }
-                    ?: R.drawable.ic_provider_default_logo)
+                .load(
+                    when (UserPreferences.currentProvider?.name) {
+                        "Streams4You" -> R.drawable.logo
+                        else -> UserPreferences.currentProvider?.logo?.takeIf { it.isNotEmpty() }
+                            ?: R.drawable.ic_provider_default_logo
+                    }
+                )
                 .fitCenter()
                 .into(this)
 

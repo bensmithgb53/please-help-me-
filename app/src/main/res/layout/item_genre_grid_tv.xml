@@ -7,7 +7,8 @@
     android:background="@drawable/bg_item_genre"
     android:focusable="true"
     android:focusableInTouchMode="true"
-    android:foreground="@drawable/fg_item_genre_tv">
+    android:foreground="@drawable/fg_item_genre_tv"
+    android:fontFamily="@font/bebasneue_regular">
 
     <View
         android:layout_width="0dp"
@@ -30,6 +31,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Name" />
+        tools:text="Name"
+        android:fontFamily="@font/bebasneue_regular" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

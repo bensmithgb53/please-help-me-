@@ -18,7 +18,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Genre" />
+        tools:text="Genre"
+        android:fontFamily="@font/bebasneue_regular" />
 
     <View
         android:layout_width="0dp"

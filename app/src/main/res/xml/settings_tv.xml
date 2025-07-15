@@ -2,6 +2,12 @@
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <SwitchPreference
+        android:key="disable_auto_update"
+        android:title="Disable Auto Update"
+        android:defaultValue="false"
+        android:summary="Disable all automatic updates including background data updates and app update notifications" />
+
     <PreferenceCategory android:title="@string/settings_category_streamingcommunity">
         <EditTextPreference
             android:key="p_settings_streamingcommunity_domain"
@@ -10,6 +16,14 @@
         <SwitchPreference
             android:key="p_settings_streamingcommunity_dnsOverHttps"
             android:title="@string/settings_category_streamingcommunity_dnsOverHttps" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="SerienStream">
+        <SwitchPreference
+            android:key="serienstream_updates_enabled"
+            android:title="Enable SerienStream Updates"
+            android:defaultValue="true"
+            android:summary="Allow background updates for SerienStream TV shows" />
     </PreferenceCategory>
 
     <Preference

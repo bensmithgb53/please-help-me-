@@ -15,6 +15,7 @@
         android:lines="1"
         android:textColor="#FFFFFF"
         android:textSize="40sp"
+        android:fontFamily="@font/bebasneue_regular"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -28,6 +29,7 @@
         app:layout_constraintBottom_toTopOf="@id/barrier1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_swiper_title"
+        android:fontFamily="@font/bebasneue_regular"
         tools:text="S1 E1" />
 
     <TextView
@@ -38,6 +40,7 @@
         android:layout_marginTop="10dp"
         android:textAllCaps="true"
         android:textColor="#FFFFFF"
+        android:fontFamily="@font/bebasneue_regular"
         app:layout_constraintBottom_toTopOf="@id/barrier1"
         app:layout_constraintStart_toEndOf="@id/tv_swiper_tv_show_last_episode"
         app:layout_constraintTop_toBottomOf="@id/tv_swiper_title"
@@ -50,6 +53,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="25dp"
         android:layout_marginTop="10dp"
+        android:fontFamily="@font/bebasneue_regular"
         app:layout_constraintBottom_toTopOf="@id/barrier1"
         app:layout_constraintStart_toEndOf="@id/tv_swiper_quality"
         app:layout_constraintTop_toBottomOf="@id/tv_swiper_title"
@@ -74,6 +78,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:fontFamily="@font/bebasneue_regular"
         app:layout_constraintBottom_toTopOf="@id/barrier1"
         app:layout_constraintStart_toEndOf="@id/iv_swiper_rating_icon"
         app:layout_constraintTop_toBottomOf="@id/tv_swiper_title"
@@ -93,6 +98,7 @@
         android:layout_marginTop="30dp"
         android:ellipsize="end"
         android:lines="5"
+        android:fontFamily="@font/bebasneue_regular"
         app:layout_constraintEnd_toStartOf="@id/guideline1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/barrier1"
@@ -100,15 +106,17 @@
 
     <TextView
         android:id="@+id/btn_swiper_watch_now"
-        style="@style/AppTheme.Widget.Tv.Button"
+        style="@style/AppTheme.Widget.Mobile.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:layout_marginBottom="50dp"
+        android:background="@drawable/bg_button_tv_blue"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:text="@string/home_swiper_watch_now"
         android:textSize="18sp"
+        android:fontFamily="@font/bebasneue_regular"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_swiper_overview" />
@@ -123,6 +131,7 @@
         android:layout_marginEnd="16dp"
         android:backgroundTint="#CC646464"
         android:progressTint="#FFFFFF"
+        android:fontFamily="@font/bebasneue_regular"
         app:layout_constraintEnd_toEndOf="@id/btn_swiper_watch_now"
         app:layout_constraintStart_toStartOf="@id/btn_swiper_watch_now"
         app:layout_constraintTop_toBottomOf="@id/btn_swiper_watch_now"
@@ -133,6 +142,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
+        android:fontFamily="@font/bebasneue_regular"
         app:layout_constraintGuide_percent="0.45" />
 
     <LinearLayout
@@ -141,6 +151,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="50dp"
         android:orientation="horizontal"
+        android:fontFamily="@font/bebasneue_regular"
         app:layout_constraintBottom_toBottomOf="@id/btn_swiper_watch_now"
         app:layout_constraintEnd_toEndOf="parent" />
 

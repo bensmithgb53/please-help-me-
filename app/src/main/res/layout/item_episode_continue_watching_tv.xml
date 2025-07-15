@@ -6,7 +6,8 @@
     android:layout_height="wrap_content"
     android:background="@drawable/bg_item_tv_show_tv"
     android:focusable="true"
-    android:focusableInTouchMode="true">
+    android:focusableInTouchMode="true"
+    android:fontFamily="@font/bebasneue_regular">
 
     <ImageView
         android:id="@+id/iv_episode_tv_show_poster"
@@ -46,7 +47,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/iv_episode_tv_show_poster"
-        tools:text="TV show title" />
+        tools:text="TV show title"
+        android:fontFamily="@font/bebasneue_regular" />
 
     <TextView
         android:id="@+id/tv_episode_info"
@@ -64,6 +66,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_episode_tv_show_title"
-        tools:text="S# E# • Title" />
+        tools:text="S# E# • Title"
+        android:fontFamily="@font/bebasneue_regular" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

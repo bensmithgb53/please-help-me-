@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black"
+    android:fontFamily="@font/bebasneue_regular"
+    tools:context=".fragments.player.PlayerSplashFragment">
+
+    <!-- Background Image with Blur Effect -->
+    <ImageView
+        android:id="@+id/iv_background"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:scaleType="centerCrop"
+        android:alpha="0.3"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/ic_launcher" />
+
+    <!-- Blur Overlay -->
+    <View
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/bg_blur_overlay"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Back Button -->
+    <ImageButton
+        android:id="@+id/btn_back"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_margin="16dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="@string/back"
+        android:src="@drawable/ic_player_back"
+        app:tint="@android:color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- Title -->
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="32dp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:textColor="#FFFFFF"
+        android:textSize="26sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_back"
+        tools:text="Movie Title" />
+
+    <!-- Subtitle -->
+    <TextView
+        android:id="@+id/tv_subtitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_title"
+        tools:text="2023 • 2h 15m" />
+
+    <!-- Choose Player Text -->
+    <TextView
+        android:id="@+id/tv_choose_player"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="48dp"
+        android:text="@string/choose_player"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_subtitle" />
+
+    <!-- Player Options Container with ScrollView -->
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginBottom="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_choose_player"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:id="@+id/ll_player_options"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="16dp">
+
+            <!-- 111movies -->
+            <Button
+                android:id="@+id/btn_111movies"
+                android:layout_width="200dp"
+                android:layout_height="56dp"
+                android:layout_marginBottom="12dp"
+                android:layout_gravity="center"
+                android:background="@drawable/bg_button_blue"
+                android:text="111movies"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp" />
+
+            <!-- Vidsrc.vip -->
+            <Button
+                android:id="@+id/btn_vidsrc_vip"
+                android:layout_width="200dp"
+                android:layout_height="56dp"
+                android:layout_marginBottom="12dp"
+                android:layout_gravity="center"
+                android:background="@drawable/bg_button_green"
+                android:text="Vidsrc.vip"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp" />
+
+            <!-- Vidsrc.su -->
+            <Button
+                android:id="@+id/btn_vidsrc_su"
+                android:layout_width="200dp"
+                android:layout_height="56dp"
+                android:layout_marginBottom="12dp"
+                android:layout_gravity="center"
+                android:background="@drawable/bg_button_red"
+                android:text="Vidsrc.su"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp" />
+
+            <!-- Vidsrc.cc -->
+            <Button
+                android:id="@+id/btn_vidsrc_cc"
+                android:layout_width="200dp"
+                android:layout_height="56dp"
+                android:layout_marginBottom="12dp"
+                android:layout_gravity="center"
+                android:background="@drawable/bg_button_orange"
+                android:text="Vidsrc.cc"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp" />
+
+            <!-- Vidlink.pro -->
+            <Button
+                android:id="@+id/btn_vidlink_pro"
+                android:layout_width="200dp"
+                android:layout_height="56dp"
+                android:layout_marginBottom="12dp"
+                android:layout_gravity="center"
+                android:background="@drawable/bg_button_purple"
+                android:text="Vidlink.pro"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp" />
+
+            <!-- Vidfast.pro -->
+            <Button
+                android:id="@+id/btn_vidfast_pro"
+                android:layout_width="200dp"
+                android:layout_height="56dp"
+                android:layout_marginBottom="12dp"
+                android:layout_gravity="center"
+                android:background="@drawable/bg_button_teal"
+                android:text="Vidfast.pro"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp" />
+
+            <!-- Hyhd.org -->
+            <Button
+                android:id="@+id/btn_hyhd_org"
+                android:layout_width="200dp"
+                android:layout_height="56dp"
+                android:layout_marginBottom="12dp"
+                android:layout_gravity="center"
+                android:background="@drawable/bg_button_pink"
+                android:text="Hyhd.org"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp" />
+
+            <!-- Vidsrc.net -->
+            <Button
+                android:id="@+id/btn_vidsrc_net"
+                android:layout_width="200dp"
+                android:layout_height="56dp"
+                android:layout_gravity="center"
+                android:background="@drawable/bg_button_indigo"
+                android:text="Vidsrc.net"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout> 

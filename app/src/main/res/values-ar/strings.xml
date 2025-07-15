@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="app_name">ستريم فليكس</string>
+	<string name="app_name">Streams4You</string>
 
 	<string name="loading_error_title">حدث خطأ</string>
 	<string name="loading_error_retry">إعادة المحاولة</string>
@@ -46,29 +46,29 @@
 	<string name="option_clear_program">إزالة من متابعة المشاهدة</string>
 	<string name="option_cancel">إلغاء</string>
 
-	<string name="episode_item_info">الموسم %d الحلقة %d • %s</string>
-	<string name="episode_item_info_episode_only">الحلقة %d • %s</string>
+	<string name="episode_item_info" formatted="false">م%d ح%d • %s</string>
+	<string name="episode_item_info_episode_only" formatted="false">ح%d • %s</string>
 
-	<string name="tv_show_item_episode_number">الحلقة %d</string>
-	<string name="tv_show_item_season_number_episode_number">الموسم %d الحلقة %d</string>
-	<string name="tv_show_item_type">مسلسل</string>
+	<string name="tv_show_item_episode_number">ح%d</string>
+	<string name="tv_show_item_season_number_episode_number" formatted="false">م%d ح%d</string>
+	<string name="tv_show_item_type">تلفاز</string>
 
-	<string name="tv_show_runtime_hours_minutes">%d ساعة %d دقيقة</string>
-	<string name="tv_show_runtime_minutes">%d دقيقة</string>
-	<string name="tv_show_watch_season_episode">مشاهدة الموسم %d الحلقة %d</string>
-	<string name="tv_show_watch_episode">مشاهدة الحلقة %d</string>
-	<string name="tv_show_trailer">الإعلان الترويجي</string>
+	<string name="tv_show_runtime_hours_minutes" formatted="false">%d س %d د</string>
+	<string name="tv_show_runtime_minutes">%d د</string>
+	<string name="tv_show_watch_season_episode" formatted="false">شاهد م%d ح%d</string>
+	<string name="tv_show_watch_episode">شاهد ح%d</string>
+	<string name="tv_show_trailer">إعلان</string>
 	<string name="tv_show_seasons">المواسم</string>
-	<string name="tv_show_cast">طاقم العمل</string>
-	<string name="tv_show_you_may_also_like">قد يعجبك أيضًا</string>
+	<string name="tv_show_cast">طاقم التمثيل</string>
+	<string name="tv_show_you_may_also_like">قد يعجبك أيضاً</string>
 
 	<string name="movie_item_type">فيلم</string>
-	<string name="movie_runtime_hours_minutes">%d ساعة %d دقيقة</string>
-	<string name="movie_runtime_minutes">%d دقيقة</string>
+	<string name="movie_runtime_hours_minutes" formatted="false">%d س %d د</string>
+	<string name="movie_runtime_minutes">%d د</string>
 	<string name="movie_watch_now">شاهد الآن</string>
-	<string name="movie_trailer">الإعلان الترويجي</string>
-	<string name="movie_cast">طاقم العمل</string>
-	<string name="movie_you_may_also_like">قد يعجبك أيضًا</string>
+	<string name="movie_trailer">إعلان</string>
+	<string name="movie_cast">طاقم التمثيل</string>
+	<string name="movie_you_may_also_like">قد يعجبك أيضاً</string>
 
 	<string name="season_number">الموسم %d</string>
 	<string name="episode_number">الحلقة %d</string>
@@ -77,12 +77,12 @@
 	<string name="people_deathday">تاريخ الوفاة</string>
 	<string name="people_birthplace">مكان الميلاد</string>
 	<string name="people_biography">السيرة الذاتية</string>
-	<string name="people_read_more">قراءة المزيد ></string>
+	<string name="people_read_more">اقرأ المزيد ></string>
 
-	<string name="genre_header_name">أفلام ومسلسلات %s</string>
+	<string name="genre_header_name">%s الأفلام والمسلسلات التلفزيونية</string>
 
-	<string name="player_subtitle_tv_show">الموسم %d الحلقة %d • %s</string>
-	<string name="player_subtitle_tv_show_episode_only">الحلقة %d • %s</string>
+	<string name="player_subtitle_tv_show" formatted="false">م%d ح%d • %s</string>
+	<string name="player_subtitle_tv_show_episode_only" formatted="false">ح%d • %s</string>
 	<string name="player_picture_in_picture_not_supported">الوضع الصوري داخل الصورة غير مدعوم على جهازك</string>
 	<string name="player_external_player_title">تشغيل باستخدام</string>
 	<string name="player_external_player_error_video">الفيديو لم يتم تحميله بعد</string>

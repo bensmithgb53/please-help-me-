@@ -7,18 +7,19 @@
     android:focusable="true"
     android:focusableInTouchMode="true">
 
-    <ImageView
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/iv_people_image"
         android:layout_width="100dp"
         android:layout_height="0dp"
         android:background="@drawable/bg_item_people_image"
+        android:clipToOutline="true"
         android:duplicateParentState="true"
         android:foreground="@drawable/fg_item_people_image_tv"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:clipToOutline="true"
+        app:shapeAppearanceOverlay="@style/RoundedImageView"
         tools:ignore="ContentDescription"
         tools:src="@drawable/ic_person_placeholder" />
 

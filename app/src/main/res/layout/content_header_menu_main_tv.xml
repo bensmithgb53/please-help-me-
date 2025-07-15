@@ -33,6 +33,7 @@
         android:paddingEnd="10dp"
         android:textColor="#FFFFFF"
         android:textSize="13sp"
+        android:fontFamily="@font/bebasneue_regular"
         app:layout_constraintStart_toEndOf="@id/iv_navigation_header_icon"
         app:layout_constraintTop_toTopOf="@id/iv_navigation_header_icon"
         tools:text="Title" />
@@ -48,6 +49,7 @@
         android:paddingEnd="10dp"
         android:textColor="#B3FFFFFF"
         android:textSize="9sp"
+        android:fontFamily="@font/bebasneue_regular"
         app:layout_constraintStart_toEndOf="@id/iv_navigation_header_icon"
         app:layout_constraintTop_toBottomOf="@id/tv_navigation_header_title"
         tools:ignore="SmallSp"

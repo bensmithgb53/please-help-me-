@@ -266,8 +266,16 @@ class CategoryViewHolder(
             setOnClickListener {
                 findNavController().navigate(
                     when (selected) {
-                        is Movie -> HomeTvFragmentDirections.actionHomeToMovie(selected.id)
-                        is TvShow -> HomeTvFragmentDirections.actionHomeToTvShow(selected.id)
+                        is Movie -> HomeTvFragmentDirections.actionHomeToMovie(
+                            selected.id,
+                            lastWatchedUrl = null,
+                            lastWatchedSourceId = null
+                        )
+                        is TvShow -> HomeTvFragmentDirections.actionHomeToTvShow(
+                            selected.id,
+                            lastWatchedUrl = null,
+                            lastWatchedSourceId = null
+                        )
                     }
                 )
             }

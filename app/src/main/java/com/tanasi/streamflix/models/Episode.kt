@@ -28,6 +28,17 @@ class Episode(
     @Embedded
     override var watchHistory: WatchItem.WatchHistory? = null
 
+    // Add these fields for continue watching direct resume
+    var lastWatchedSourceId: String? = null
+    var lastWatchedUrl: String? = null
+
+    // Legacy fields for database migration compatibility (marked as ignored)
+    @Ignore
+    var lastEngagementTimeUtcMillis: Long? = null
+    @Ignore
+    var lastPlaybackPositionMillis: Long? = null
+    @Ignore
+    var durationMillis: Long? = null
 
     fun isSame(episode: Episode): Boolean {
         if (isWatched != episode.isWatched) return false
@@ -42,7 +53,6 @@ class Episode(
         this.watchHistory = episode.watchHistory
         return this
     }
-
 
     @Ignore
     override lateinit var itemType: AppAdapter.Type

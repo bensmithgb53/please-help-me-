@@ -82,7 +82,9 @@ class ShowOptionsMobileDialog(
                     is HomeMobileFragment -> episode.tvShow?.let { tvShow ->
                         NavHostFragment.findNavController(fragment).navigate(
                             HomeMobileFragmentDirections.actionHomeToTvShow(
-                                id = tvShow.id
+                                id = tvShow.id,
+                                lastWatchedUrl = null,
+                                lastWatchedSourceId = null
                             )
                         )
                     }

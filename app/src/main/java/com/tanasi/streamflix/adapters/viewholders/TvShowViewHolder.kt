@@ -116,17 +116,23 @@ class TvShowViewHolder(
                 when (context.toActivity()?.getCurrentFragment()) {
                     is HomeMobileFragment -> findNavController().navigate(
                         HomeMobileFragmentDirections.actionHomeToTvShow(
-                            id = tvShow.id
+                            id = tvShow.id,
+                            lastWatchedUrl = null,
+                            lastWatchedSourceId = null
                         )
                     )
                     is MovieMobileFragment -> findNavController().navigate(
                         MovieMobileFragmentDirections.actionMovieToTvShow(
-                            id = tvShow.id
+                            id = tvShow.id,
+                            lastWatchedUrl = null,
+                            lastWatchedSourceId = null
                         )
                     )
                     is TvShowMobileFragment -> findNavController().navigate(
                         TvShowMobileFragmentDirections.actionTvShowToTvShow(
-                            id = tvShow.id
+                            id = tvShow.id,
+                            lastWatchedUrl = null,
+                            lastWatchedSourceId = null
                         )
                     )
                 }
@@ -178,17 +184,23 @@ class TvShowViewHolder(
                 when (context.toActivity()?.getCurrentFragment()) {
                     is HomeTvFragment -> findNavController().navigate(
                         HomeTvFragmentDirections.actionHomeToTvShow(
-                            id = tvShow.id
+                            id = tvShow.id,
+                            lastWatchedUrl = null,
+                            lastWatchedSourceId = null
                         )
                     )
                     is MovieTvFragment -> findNavController().navigate(
                         MovieTvFragmentDirections.actionMovieToTvShow(
-                            id = tvShow.id
+                            id = tvShow.id,
+                            lastWatchedUrl = null,
+                            lastWatchedSourceId = null
                         )
                     )
                     is TvShowTvFragment -> findNavController().navigate(
                         TvShowTvFragmentDirections.actionTvShowToTvShow(
-                            id = tvShow.id
+                            id = tvShow.id,
+                            lastWatchedUrl = null,
+                            lastWatchedSourceId = null
                         )
                     )
                 }
@@ -255,22 +267,30 @@ class TvShowViewHolder(
                 when (context.toActivity()?.getCurrentFragment()) {
                     is GenreMobileFragment -> findNavController().navigate(
                         GenreMobileFragmentDirections.actionGenreToTvShow(
-                            id = tvShow.id
+                            id = tvShow.id,
+                            lastWatchedUrl = null,
+                            lastWatchedSourceId = null
                         )
                     )
                     is PeopleMobileFragment -> findNavController().navigate(
                         PeopleMobileFragmentDirections.actionPeopleToTvShow(
-                            id = tvShow.id
+                            id = tvShow.id,
+                            lastWatchedUrl = null,
+                            lastWatchedSourceId = null
                         )
                     )
                     is SearchMobileFragment -> findNavController().navigate(
                         SearchMobileFragmentDirections.actionSearchToTvShow(
-                            id = tvShow.id
+                            id = tvShow.id,
+                            lastWatchedUrl = null,
+                            lastWatchedSourceId = null
                         )
                     )
                     is TvShowsMobileFragment -> findNavController().navigate(
                         TvShowsMobileFragmentDirections.actionTvShowsToTvShow(
-                            id = tvShow.id
+                            id = tvShow.id,
+                            lastWatchedUrl = null,
+                            lastWatchedSourceId = null
                         )
                     )
                 }
@@ -322,22 +342,30 @@ class TvShowViewHolder(
                 when (context.toActivity()?.getCurrentFragment()) {
                     is GenreTvFragment -> findNavController().navigate(
                         GenreTvFragmentDirections.actionGenreToTvShow(
-                            id = tvShow.id
+                            id = tvShow.id,
+                            lastWatchedUrl = null,
+                            lastWatchedSourceId = null
                         )
                     )
                     is PeopleTvFragment -> findNavController().navigate(
                         PeopleTvFragmentDirections.actionPeopleToTvShow(
-                            id = tvShow.id
+                            id = tvShow.id,
+                            lastWatchedUrl = null,
+                            lastWatchedSourceId = null
                         )
                     )
                     is SearchTvFragment -> findNavController().navigate(
                         SearchTvFragmentDirections.actionSearchToTvShow(
-                            id = tvShow.id
+                            id = tvShow.id,
+                            lastWatchedUrl = null,
+                            lastWatchedSourceId = null
                         )
                     )
                     is TvShowsTvFragment -> findNavController().navigate(
                         TvShowsTvFragmentDirections.actionTvShowsToTvShow(
-                            id = tvShow.id
+                            id = tvShow.id,
+                            lastWatchedUrl = null,
+                            lastWatchedSourceId = null
                         )
                     )
                 }
@@ -464,6 +492,8 @@ class TvShowViewHolder(
                 findNavController().navigate(
                     HomeMobileFragmentDirections.actionHomeToTvShow(
                         id = tvShow.id,
+                        lastWatchedUrl = null,
+                        lastWatchedSourceId = null
                     )
                 )
             }
@@ -474,6 +504,11 @@ class TvShowViewHolder(
 
 
     private fun displayTvShowMobile(binding: ContentTvShowMobileBinding) {
+        // Set up back button click handler
+        binding.btnBack.setOnClickListener {
+            context.toActivity()?.supportFragmentManager?.popBackStack()
+        }
+
         binding.ivTvShowPoster.run {
             Glide.with(context)
                 .load(tvShow.poster)
@@ -541,7 +576,7 @@ class TvShowViewHolder(
                 if (episodeToWatch == null) return@setOnClickListener
 
                 findNavController().navigate(
-                    TvShowMobileFragmentDirections.actionTvShowToPlayer(
+                    TvShowMobileFragmentDirections.actionTvShowToPlayerSplash(
                         id = episodeToWatch.id,
                         title = tvShow.title,
                         subtitle = episodeToWatch.season?.takeIf { it.number != 0 }?.let { season ->
@@ -660,6 +695,11 @@ class TvShowViewHolder(
     }
 
     private fun displayTvShowTv(binding: ContentTvShowTvBinding) {
+        // Set up back button click handler
+        binding.btnBack.setOnClickListener {
+            context.toActivity()?.supportFragmentManager?.popBackStack()
+        }
+
         binding.ivTvShowPoster.run {
             Glide.with(context)
                 .load(tvShow.poster)
@@ -727,7 +767,7 @@ class TvShowViewHolder(
                 if (episodeToWatch == null) return@setOnClickListener
 
                 findNavController().navigate(
-                    TvShowTvFragmentDirections.actionTvShowToPlayer(
+                    TvShowTvFragmentDirections.actionTvShowToPlayerSplash(
                         id = episodeToWatch.id,
                         title = tvShow.title,
                         subtitle = episodeToWatch.season?.takeIf { it.number != 0 }?.let { season ->

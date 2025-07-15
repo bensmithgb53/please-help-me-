@@ -5,7 +5,22 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <ImageView
+    <!-- Back Button -->
+    <ImageButton
+        android:id="@+id/btn_back"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_margin="16dp"
+        android:background="@drawable/bg_back_button_focus"
+        android:contentDescription="@string/back"
+        android:src="@drawable/ic_player_back"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        app:tint="@android:color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/iv_tv_show_poster"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
@@ -14,6 +29,7 @@
         android:adjustViewBounds="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearanceOverlay="@style/RoundedImageView"
         tools:ignore="ContentDescription"
         tools:layout_constraintDimensionRatio="2:3"
         tools:layout_height="0dp"
@@ -27,7 +43,7 @@
         android:layout_marginTop="50dp"
         android:layout_marginEnd="70dp"
         android:textColor="#FFFFFF"
-        android:textSize="50sp"
+        android:textSize="52sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/iv_tv_show_poster"
         app:layout_constraintTop_toTopOf="parent"
@@ -40,7 +56,7 @@
         android:layout_height="0dp"
         android:layout_marginStart="40dp"
         android:src="@drawable/ic_star"
-        android:tint="#C0C0C0"
+        android:tint="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="@id/tv_tv_show_rating"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintStart_toEndOf="@id/iv_tv_show_poster"
@@ -53,6 +69,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@id/barrier1"
         app:layout_constraintStart_toEndOf="@id/iv_tv_show_rating_icon"
         app:layout_constraintTop_toBottomOf="@id/tv_tv_show_title"
@@ -66,6 +84,7 @@
         android:layout_marginTop="15dp"
         android:textAllCaps="true"
         android:textColor="#FFFFFF"
+        android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@id/barrier1"
         app:layout_constraintStart_toEndOf="@id/tv_tv_show_rating"
         app:layout_constraintTop_toBottomOf="@id/tv_tv_show_title"
@@ -78,6 +97,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="25dp"
         android:layout_marginTop="15dp"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@id/barrier1"
         app:layout_constraintStart_toEndOf="@id/tv_tv_show_quality"
         app:layout_constraintTop_toBottomOf="@id/tv_tv_show_title"
@@ -90,6 +111,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="25dp"
         android:layout_marginTop="15dp"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@id/barrier1"
         app:layout_constraintStart_toEndOf="@id/tv_tv_show_released"
         app:layout_constraintTop_toBottomOf="@id/tv_tv_show_title"
@@ -110,6 +133,8 @@
         android:layout_marginStart="40dp"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="70dp"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/iv_tv_show_poster"
         app:layout_constraintTop_toBottomOf="@id/barrier1"
@@ -125,6 +150,8 @@
         android:layout_marginEnd="70dp"
         android:ellipsize="end"
         android:maxLines="10"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/iv_tv_show_poster"
         app:layout_constraintTop_toBottomOf="@id/tv_tv_show_genres"
@@ -133,7 +160,7 @@
 
     <TextView
         android:id="@+id/btn_tv_show_watch_episode"
-        style="@style/AppTheme.Widget.Tv.Button"
+        style="@style/AppTheme.Widget.Mobile.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="40dp"
@@ -141,6 +168,8 @@
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:text="@string/tv_show_watch_season_episode"
+        android:textSize="18sp"
+        android:background="@drawable/bg_button_tv_purple"
         app:layout_constraintStart_toEndOf="@id/iv_tv_show_poster"
         app:layout_constraintTop_toBottomOf="@id/tv_tv_show_overview"
         app:layout_goneMarginStart="70dp" />
@@ -185,7 +214,7 @@
 
     <TextView
         android:id="@+id/btn_tv_show_trailer"
-        style="@style/AppTheme.Widget.Tv.Button"
+        style="@style/AppTheme.Widget.Mobile.Button.Secondary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="25dp"
@@ -193,6 +222,8 @@
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:text="@string/tv_show_trailer"
+        android:textSize="18sp"
+        android:background="@drawable/bg_button_tv_teal"
         app:layout_constraintStart_toEndOf="@id/barrier2"
         app:layout_constraintTop_toBottomOf="@id/tv_tv_show_overview" />
 
@@ -205,10 +236,11 @@
         android:layout_marginTop="30dp"
         android:focusable="true"
         android:focusableInTouchMode="true"
+        android:clickable="true"
+        android:background="@drawable/bg_heart_focus_tv"
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
-        android:src="@drawable/ic_favorite_disable"
-        android:tint="@drawable/color_button_text"
+        android:src="@drawable/ic_favorite_selector"
         app:layout_constraintBottom_toBottomOf="@id/btn_tv_show_trailer"
         app:layout_constraintStart_toEndOf="@id/btn_tv_show_trailer"
         app:layout_constraintTop_toBottomOf="@id/tv_tv_show_overview"

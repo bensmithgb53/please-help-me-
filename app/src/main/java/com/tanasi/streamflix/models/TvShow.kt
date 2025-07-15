@@ -13,6 +13,7 @@ class TvShow(
     var id: String = "",
     var title: String = "",
     var overview: String? = null,
+    releasedRaw: String? = null,
     released: String? = null,
     var runtime: Int? = null,
     var trailer: String? = null,
@@ -33,6 +34,7 @@ class TvShow(
     val recommendations: List<Show> = listOf(),
 ) : Show, AppAdapter.Item {
 
+    var releasedRaw = releasedRaw ?: released
     var released = released?.toCalendar()
     override var isFavorite: Boolean = false
     var isWatching: Boolean = true
@@ -73,6 +75,7 @@ class TvShow(
         id: String = this.id,
         title: String = this.title,
         overview: String? = this.overview,
+        releasedRaw: String? = this.releasedRaw,
         released: String? = this.released?.format("yyyy-MM-dd"),
         runtime: Int? = this.runtime,
         trailer: String? = this.trailer,
@@ -89,6 +92,7 @@ class TvShow(
         id,
         title,
         overview,
+        releasedRaw,
         released,
         runtime,
         trailer,
@@ -123,6 +127,7 @@ class TvShow(
         if (directors != other.directors) return false
         if (cast != other.cast) return false
         if (recommendations != other.recommendations) return false
+        if (releasedRaw != other.releasedRaw) return false
         if (released != other.released) return false
         if (isFavorite != other.isFavorite) return false
         if (isWatching != other.isWatching) return false
@@ -145,6 +150,7 @@ class TvShow(
         result = 31 * result + directors.hashCode()
         result = 31 * result + cast.hashCode()
         result = 31 * result + recommendations.hashCode()
+        result = 31 * result + (releasedRaw?.hashCode() ?: 0)
         result = 31 * result + (released?.hashCode() ?: 0)
         result = 31 * result + isFavorite.hashCode()
         result = 31 * result + isWatching.hashCode()

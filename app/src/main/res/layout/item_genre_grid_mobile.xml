@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_item_genre">
+    android:background="@drawable/bg_item_genre"
+    android:fontFamily="@font/bebasneue_regular">
 
     <View
         android:layout_width="0dp"
@@ -25,6 +26,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:text="Name" />
+        tools:text="Name"
+        android:fontFamily="@font/bebasneue_regular" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -107,39 +107,47 @@ class MovieViewHolder(
     private fun displayMobileItem(binding: ItemMovieMobileBinding) {
         binding.root.apply {
             setOnClickListener {
-                when (context.toActivity()?.getCurrentFragment()) {
-                    is HomeMobileFragment -> {
-                        findNavController().navigate(
-                            HomeMobileFragmentDirections.actionHomeToMovie(
-                                id = movie.id
-                            )
+                if (movie.itemType == AppAdapter.Type.MOVIE_CONTINUE_WATCHING_MOBILE_ITEM) {
+                    // Always go directly to PlayerSplash for continue watching movies
+                    findNavController().navigate(
+                        MovieMobileFragmentDirections.actionMovieToPlayerSplash(
+                            id = movie.id,
+                            title = movie.title,
+                            subtitle = movie.released?.format("yyyy") ?: "",
+                            videoType = Video.Type.Movie(
+                                id = movie.id,
+                                title = movie.title,
+                                releaseDate = movie.released?.format("yyyy-MM-dd") ?: "",
+                                poster = movie.poster ?: "",
+                            ),
                         )
-                        if (movie.itemType == AppAdapter.Type.MOVIE_CONTINUE_WATCHING_MOBILE_ITEM) {
+                    )
+                } else {
+                    when (context.toActivity()?.getCurrentFragment()) {
+                        is HomeMobileFragment -> {
                             findNavController().navigate(
-                                MovieMobileFragmentDirections.actionMovieToPlayer(
+                                HomeMobileFragmentDirections.actionHomeToMovie(
                                     id = movie.id,
-                                    title = movie.title,
-                                    subtitle = movie.released?.format("yyyy") ?: "",
-                                    videoType = Video.Type.Movie(
-                                        id = movie.id,
-                                        title = movie.title,
-                                        releaseDate = movie.released?.format("yyyy-MM-dd") ?: "",
-                                        poster = movie.poster ?: "",
-                                    ),
+                                    lastWatchedUrl = null,
+                                    lastWatchedSourceId = null
                                 )
                             )
                         }
+                        is MovieMobileFragment -> findNavController().navigate(
+                            MovieMobileFragmentDirections.actionMovieToMovie(
+                                id = movie.id,
+                                lastWatchedUrl = null,
+                                lastWatchedSourceId = null
+                            )
+                        )
+                        is TvShowMobileFragment -> findNavController().navigate(
+                            TvShowMobileFragmentDirections.actionTvShowToMovie(
+                                id = movie.id,
+                                lastWatchedUrl = null,
+                                lastWatchedSourceId = null
+                            )
+                        )
                     }
-                    is MovieMobileFragment -> findNavController().navigate(
-                        MovieMobileFragmentDirections.actionMovieToMovie(
-                            id = movie.id
-                        )
-                    )
-                    is TvShowMobileFragment -> findNavController().navigate(
-                        TvShowMobileFragmentDirections.actionTvShowToMovie(
-                            id = movie.id
-                        )
-                    )
                 }
             }
             setOnLongClickListener {
@@ -185,39 +193,89 @@ class MovieViewHolder(
     private fun displayTvItem(binding: ItemMovieTvBinding) {
         binding.root.apply {
             setOnClickListener {
-                when (context.toActivity()?.getCurrentFragment()) {
-                    is HomeTvFragment -> {
+                if (movie.itemType == AppAdapter.Type.MOVIE_CONTINUE_WATCHING_TV_ITEM) {
+                    val context = binding.root.context
+                    val activity = context.toActivity()
+                    val currentFragment = activity?.getCurrentFragment()
+                    if (currentFragment is com.tanasi.streamflix.fragments.home.HomeTvFragment) {
+                        // Step 1: Go to MovieTvFragment
                         findNavController().navigate(
-                            HomeTvFragmentDirections.actionHomeToMovie(
-                                id = movie.id
+                            com.tanasi.streamflix.fragments.home.HomeTvFragmentDirections.actionHomeToMovie(
+                                id = movie.id,
+                                lastWatchedUrl = null,
+                                lastWatchedSourceId = null
                             )
                         )
-                        if (movie.itemType == AppAdapter.Type.MOVIE_CONTINUE_WATCHING_TV_ITEM) {
-                            findNavController().navigate(
-                                MovieTvFragmentDirections.actionMovieToPlayer(
+                        // Step 2: Immediately go to PlayerSplash
+                        findNavController().navigate(
+                            MovieTvFragmentDirections.actionMovieToPlayerSplash(
+                                id = movie.id,
+                                title = movie.title,
+                                subtitle = movie.released?.format("yyyy") ?: "",
+                                videoType = Video.Type.Movie(
                                     id = movie.id,
                                     title = movie.title,
-                                    subtitle = movie.released?.format("yyyy") ?: "",
-                                    videoType = Video.Type.Movie(
-                                        id = movie.id,
-                                        title = movie.title,
-                                        releaseDate = movie.released?.format("yyyy-MM-dd") ?: "",
-                                        poster = movie.poster ?: "",
-                                    ),
+                                    releaseDate = movie.released?.format("yyyy-MM-dd") ?: "",
+                                    poster = movie.poster ?: "",
+                                ),
+                            )
+                        )
+                    } else {
+                        // Already in Movie fragment, go directly to PlayerSplash
+                        findNavController().navigate(
+                            MovieTvFragmentDirections.actionMovieToPlayerSplash(
+                                id = movie.id,
+                                title = movie.title,
+                                subtitle = movie.released?.format("yyyy") ?: "",
+                                videoType = Video.Type.Movie(
+                                    id = movie.id,
+                                    title = movie.title,
+                                    releaseDate = movie.released?.format("yyyy-MM-dd") ?: "",
+                                    poster = movie.poster ?: "",
+                                ),
+                            )
+                        )
+                    }
+                } else {
+                    when (context.toActivity()?.getCurrentFragment()) {
+                        is com.tanasi.streamflix.fragments.home.HomeTvFragment -> {
+                            findNavController().navigate(
+                                com.tanasi.streamflix.fragments.home.HomeTvFragmentDirections.actionHomeToMovie(
+                                    id = movie.id,
+                                    lastWatchedUrl = null,
+                                    lastWatchedSourceId = null
                                 )
                             )
                         }
+                        is com.tanasi.streamflix.fragments.movies.MoviesTvFragment -> findNavController().navigate(
+                            com.tanasi.streamflix.fragments.movies.MoviesTvFragmentDirections.actionMoviesToMovie(
+                                id = movie.id,
+                                lastWatchedUrl = null,
+                                lastWatchedSourceId = null
+                            )
+                        )
+                        is com.tanasi.streamflix.fragments.people.PeopleTvFragment -> findNavController().navigate(
+                            com.tanasi.streamflix.fragments.people.PeopleTvFragmentDirections.actionPeopleToMovie(
+                                id = movie.id,
+                                lastWatchedUrl = null,
+                                lastWatchedSourceId = null
+                            )
+                        )
+                        is com.tanasi.streamflix.fragments.search.SearchTvFragment -> findNavController().navigate(
+                            com.tanasi.streamflix.fragments.search.SearchTvFragmentDirections.actionSearchToMovie(
+                                id = movie.id,
+                                lastWatchedUrl = null,
+                                lastWatchedSourceId = null
+                            )
+                        )
+                        is com.tanasi.streamflix.fragments.tv_show.TvShowTvFragment -> findNavController().navigate(
+                            com.tanasi.streamflix.fragments.tv_show.TvShowTvFragmentDirections.actionTvShowToMovie(
+                                id = movie.id,
+                                lastWatchedUrl = null,
+                                lastWatchedSourceId = null
+                            )
+                        )
                     }
-                    is MovieTvFragment -> findNavController().navigate(
-                        MovieTvFragmentDirections.actionMovieToMovie(
-                            id = movie.id
-                        )
-                    )
-                    is TvShowTvFragment -> findNavController().navigate(
-                        TvShowTvFragmentDirections.actionTvShowToMovie(
-                            id = movie.id
-                        )
-                    )
                 }
             }
             setOnLongClickListener {
@@ -281,22 +339,30 @@ class MovieViewHolder(
                 when (context.toActivity()?.getCurrentFragment()) {
                     is GenreMobileFragment -> findNavController().navigate(
                         GenreMobileFragmentDirections.actionGenreToMovie(
-                            id = movie.id
+                            id = movie.id,
+                            lastWatchedUrl = null,
+                            lastWatchedSourceId = null
                         )
                     )
                     is MoviesMobileFragment -> findNavController().navigate(
                         MoviesMobileFragmentDirections.actionMoviesToMovie(
-                            id = movie.id
+                            id = movie.id,
+                            lastWatchedUrl = null,
+                            lastWatchedSourceId = null
                         )
                     )
                     is PeopleMobileFragment -> findNavController().navigate(
                         PeopleMobileFragmentDirections.actionPeopleToMovie(
-                            id = movie.id
+                            id = movie.id,
+                            lastWatchedUrl = null,
+                            lastWatchedSourceId = null
                         )
                     )
                     is SearchMobileFragment -> findNavController().navigate(
                         SearchMobileFragmentDirections.actionSearchToMovie(
-                            id = movie.id
+                            id = movie.id,
+                            lastWatchedUrl = null,
+                            lastWatchedSourceId = null
                         )
                     )
                 }
@@ -347,22 +413,30 @@ class MovieViewHolder(
                 when (context.toActivity()?.getCurrentFragment()) {
                     is GenreTvFragment -> findNavController().navigate(
                         GenreTvFragmentDirections.actionGenreToMovie(
-                            id = movie.id
+                            id = movie.id,
+                            lastWatchedUrl = null,
+                            lastWatchedSourceId = null
                         )
                     )
                     is MoviesTvFragment -> findNavController().navigate(
                         MoviesTvFragmentDirections.actionMoviesToMovie(
-                            id = movie.id
+                            id = movie.id,
+                            lastWatchedUrl = null,
+                            lastWatchedSourceId = null
                         )
                     )
                     is PeopleTvFragment -> findNavController().navigate(
                         PeopleTvFragmentDirections.actionPeopleToMovie(
-                            id = movie.id
+                            id = movie.id,
+                            lastWatchedUrl = null,
+                            lastWatchedSourceId = null
                         )
                     )
                     is SearchTvFragment -> findNavController().navigate(
                         SearchTvFragmentDirections.actionSearchToMovie(
-                            id = movie.id
+                            id = movie.id,
+                            lastWatchedUrl = null,
+                            lastWatchedSourceId = null
                         )
                     )
                 }
@@ -469,6 +543,8 @@ class MovieViewHolder(
                 findNavController().navigate(
                     HomeMobileFragmentDirections.actionHomeToMovie(
                         id = movie.id,
+                        lastWatchedUrl = null,
+                        lastWatchedSourceId = null
                     )
                 )
             }
@@ -490,6 +566,11 @@ class MovieViewHolder(
 
 
     private fun displayMovieMobile(binding: ContentMovieMobileBinding) {
+        // Set up back button click handler
+        binding.btnBack.setOnClickListener {
+            context.toActivity()?.supportFragmentManager?.popBackStack()
+        }
+
         binding.ivMoviePoster.run {
             Glide.with(context)
                 .load(movie.poster)
@@ -553,7 +634,7 @@ class MovieViewHolder(
         binding.btnMovieWatchNow.apply {
             setOnClickListener {
                 findNavController().navigate(
-                    MovieMobileFragmentDirections.actionMovieToPlayer(
+                    MovieMobileFragmentDirections.actionMovieToPlayerSplash(
                         id = movie.id,
                         title = movie.title,
                         subtitle = movie.released?.format("yyyy") ?: "",
@@ -621,6 +702,11 @@ class MovieViewHolder(
     }
 
     private fun displayMovieTv(binding: ContentMovieTvBinding) {
+        // Set up back button click handler
+        binding.btnBack.setOnClickListener {
+            context.toActivity()?.supportFragmentManager?.popBackStack()
+        }
+
         binding.ivMoviePoster.run {
             Glide.with(context)
                 .load(movie.poster)
@@ -684,7 +770,7 @@ class MovieViewHolder(
         binding.btnMovieWatchNow.apply {
             setOnClickListener {
                 findNavController().navigate(
-                    MovieTvFragmentDirections.actionMovieToPlayer(
+                    MovieTvFragmentDirections.actionMovieToPlayerSplash(
                         id = movie.id,
                         title = movie.title,
                         subtitle = movie.released?.format("yyyy") ?: "",

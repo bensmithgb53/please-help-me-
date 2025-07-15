@@ -5,7 +5,22 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <ImageView
+    <!-- Back Button -->
+    <ImageButton
+        android:id="@+id/btn_back"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_margin="16dp"
+        android:background="@drawable/bg_back_button_focus"
+        android:contentDescription="@string/back"
+        android:src="@drawable/ic_player_back"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        app:tint="@android:color/white"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/iv_movie_poster"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
@@ -14,6 +29,7 @@
         android:adjustViewBounds="true"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:shapeAppearanceOverlay="@style/RoundedImageView"
         tools:ignore="ContentDescription"
         tools:layout_constraintDimensionRatio="2:3"
         tools:layout_height="0dp"
@@ -27,7 +43,7 @@
         android:layout_marginTop="50dp"
         android:layout_marginEnd="70dp"
         android:textColor="#FFFFFF"
-        android:textSize="50sp"
+        android:textSize="52sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/iv_movie_poster"
         app:layout_constraintTop_toTopOf="parent"
@@ -40,7 +56,7 @@
         android:layout_height="0dp"
         android:layout_marginStart="40dp"
         android:src="@drawable/ic_star"
-        android:tint="#C0C0C0"
+        android:tint="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="@id/tv_movie_rating"
         app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintStart_toEndOf="@id/iv_movie_poster"
@@ -53,6 +69,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@id/barrier1"
         app:layout_constraintStart_toEndOf="@id/iv_movie_rating_icon"
         app:layout_constraintTop_toBottomOf="@id/tv_movie_title"
@@ -66,6 +84,7 @@
         android:layout_marginTop="15dp"
         android:textAllCaps="true"
         android:textColor="#FFFFFF"
+        android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@id/barrier1"
         app:layout_constraintStart_toEndOf="@id/tv_movie_rating"
         app:layout_constraintTop_toBottomOf="@id/tv_movie_title"
@@ -78,6 +97,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="25dp"
         android:layout_marginTop="15dp"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@id/barrier1"
         app:layout_constraintStart_toEndOf="@id/tv_movie_quality"
         app:layout_constraintTop_toBottomOf="@id/tv_movie_title"
@@ -90,6 +111,8 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="25dp"
         android:layout_marginTop="15dp"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
         app:layout_constraintBottom_toTopOf="@id/barrier1"
         app:layout_constraintStart_toEndOf="@id/tv_movie_released"
         app:layout_constraintTop_toBottomOf="@id/tv_movie_title"
@@ -110,6 +133,8 @@
         android:layout_marginStart="40dp"
         android:layout_marginTop="5dp"
         android:layout_marginEnd="70dp"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/iv_movie_poster"
         app:layout_constraintTop_toBottomOf="@id/barrier1"
@@ -125,6 +150,8 @@
         android:layout_marginEnd="70dp"
         android:ellipsize="end"
         android:maxLines="10"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/iv_movie_poster"
         app:layout_constraintTop_toBottomOf="@id/tv_movie_genres"
@@ -133,7 +160,7 @@
 
     <TextView
         android:id="@+id/btn_movie_watch_now"
-        style="@style/AppTheme.Widget.Tv.Button"
+        style="@style/AppTheme.Widget.Mobile.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="40dp"
@@ -141,6 +168,8 @@
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:text="@string/movie_watch_now"
+        android:textSize="18sp"
+        android:background="@drawable/bg_button_tv_green"
         app:layout_constraintStart_toEndOf="@id/iv_movie_poster"
         app:layout_constraintTop_toBottomOf="@id/tv_movie_overview"
         app:layout_goneMarginStart="70dp" />
@@ -162,7 +191,7 @@
 
     <TextView
         android:id="@+id/btn_movie_trailer"
-        style="@style/AppTheme.Widget.Tv.Button"
+        style="@style/AppTheme.Widget.Mobile.Button.Secondary"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="25dp"
@@ -170,6 +199,8 @@
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:text="@string/movie_trailer"
+        android:textSize="18sp"
+        android:background="@drawable/bg_button_tv_orange"
         app:layout_constraintStart_toEndOf="@id/btn_movie_watch_now"
         app:layout_constraintTop_toBottomOf="@id/tv_movie_overview" />
 
@@ -182,10 +213,12 @@
         android:layout_marginTop="30dp"
         android:focusable="true"
         android:focusableInTouchMode="true"
+        android:clickable="true"
+        android:background="@drawable/bg_heart_focus_tv"
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
-        android:src="@drawable/ic_favorite_disable"
-        android:tint="@drawable/color_button_text"
+        android:src="@drawable/ic_favorite_selector"
+        android:fontFamily="@font/bebasneue_regular"
         app:layout_constraintBottom_toBottomOf="@id/btn_movie_trailer"
         app:layout_constraintStart_toEndOf="@id/btn_movie_trailer"
         app:layout_constraintTop_toBottomOf="@id/tv_movie_overview"

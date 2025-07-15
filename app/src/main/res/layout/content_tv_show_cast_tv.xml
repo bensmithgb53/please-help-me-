@@ -17,7 +17,8 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:fontFamily="@font/bebasneue_regular" />
 
     <androidx.leanback.widget.HorizontalGridView
         android:id="@+id/hgv_tv_show_cast"
@@ -33,6 +34,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_tv_show_cast_label"
-        tools:listitem="@layout/item_people_tv" />
+        tools:listitem="@layout/item_people_tv"
+        android:fontFamily="@font/bebasneue_regular" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,10 +6,80 @@
     android:layout_height="match_parent"
     tools:context=".fragments.movies.MoviesMobileFragment">
 
+    <!-- Filter bar -->
+    <LinearLayout
+        android:id="@+id/ll_filters"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginEnd="16dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Year"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:layout_gravity="center_horizontal"/>
+            <Spinner
+                android:id="@+id/spinner_year"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:background="@drawable/bg_spinner_red"
+                android:padding="8dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Genres"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp"
+                android:layout_gravity="center_horizontal"/>
+            <Button
+                android:id="@+id/btn_genre_select"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Select Genres"
+                android:background="@drawable/bg_button_indigo"
+                android:padding="8dp"
+                android:layout_marginTop="2dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/no_results_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="No results found."
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/ll_filters"
+        app:layout_constraintBottom_toTopOf="@id/rv_movies"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="32dp" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_movies"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="16dp"
         android:clipChildren="false"
         android:clipToPadding="false"
         android:orientation="vertical"
@@ -18,7 +88,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/ll_filters"
         app:spanCount="3"
         tools:listitem="@layout/item_movie_grid_mobile" />
 

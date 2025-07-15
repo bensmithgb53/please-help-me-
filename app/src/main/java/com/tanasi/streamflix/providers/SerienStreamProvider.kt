@@ -53,6 +53,7 @@ import java.util.concurrent.TimeUnit
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
+import androidx.preference.PreferenceManager
 
 
 object SerienStreamProvider : Provider {
@@ -90,6 +91,16 @@ object SerienStreamProvider : Provider {
     }
 
     private fun scheduleUpdateWorker(context: Context) {
+        val prefs = PreferenceManager.getDefaultSharedPreferences(context)
+        val autoUpdateDisabled = prefs.getBoolean("disable_auto_update", false)
+        val serienstreamUpdatesEnabled = prefs.getBoolean("serienstream_updates_enabled", true)
+
+        if (autoUpdateDisabled || !serienstreamUpdatesEnabled) {
+            // Cancel any existing work if updates are disabled
+            androidx.work.WorkManager.getInstance(context).cancelUniqueWork("SerienStreamUpdateTvShowWorker")
+            return
+        }
+
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
@@ -98,7 +109,7 @@ object SerienStreamProvider : Provider {
             .setConstraints(constraints)
             .build()
 
-        WorkManager.getInstance(context).enqueueUniqueWork(
+        androidx.work.WorkManager.getInstance(context).enqueueUniqueWork(
             "SerienStreamUpdateTvShowWorker",
             ExistingWorkPolicy.KEEP,
             workRequest

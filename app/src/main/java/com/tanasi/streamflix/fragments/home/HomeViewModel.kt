@@ -8,6 +8,7 @@ import com.tanasi.streamflix.models.Category
 import com.tanasi.streamflix.models.Episode
 import com.tanasi.streamflix.models.Movie
 import com.tanasi.streamflix.models.TvShow
+import com.tanasi.streamflix.models.WatchItem
 import com.tanasi.streamflix.utils.UserPreferences
 import com.tanasi.streamflix.utils.combine
 import kotlinx.coroutines.Dispatchers
@@ -29,12 +30,46 @@ class HomeViewModel(database: AppDatabase) : ViewModel() {
             database.episodeDao().getWatchingEpisodes(),
             database.episodeDao().getNextEpisodesToWatch(),
         ) { watchingMovies, watchingEpisodes, watchNextEpisodes ->
-            watchingMovies + watchingEpisodes.onEach { episode ->
+            // Populate watchHistory for movies from legacy fields
+            watchingMovies.onEach { movie ->
+                val engagementTime = movie.lastEngagementTimeUtcMillis
+                val playbackPosition = movie.lastPlaybackPositionMillis
+                val duration = movie.durationMillis
+                if (engagementTime != null && playbackPosition != null && duration != null) {
+                    movie.watchHistory = WatchItem.WatchHistory(
+                        lastEngagementTimeUtcMillis = engagementTime,
+                        lastPlaybackPositionMillis = playbackPosition,
+                        durationMillis = duration
+                    )
+                }
+            } + watchingEpisodes.onEach { episode ->
                 episode.tvShow = episode.tvShow?.let { database.tvShowDao().getById(it.id) }
                 episode.season = episode.season?.let { database.seasonDao().getById(it.id) }
+                // Populate watchHistory for episodes from legacy fields
+                val engagementTime = episode.lastEngagementTimeUtcMillis
+                val playbackPosition = episode.lastPlaybackPositionMillis
+                val duration = episode.durationMillis
+                if (engagementTime != null && playbackPosition != null && duration != null) {
+                    episode.watchHistory = WatchItem.WatchHistory(
+                        lastEngagementTimeUtcMillis = engagementTime,
+                        lastPlaybackPositionMillis = playbackPosition,
+                        durationMillis = duration
+                    )
+                }
             } + watchNextEpisodes.onEach { episode ->
                 episode.tvShow = episode.tvShow?.let { database.tvShowDao().getById(it.id) }
                 episode.season = episode.season?.let { database.seasonDao().getById(it.id) }
+                // Populate watchHistory for episodes from legacy fields
+                val engagementTime = episode.lastEngagementTimeUtcMillis
+                val playbackPosition = episode.lastPlaybackPositionMillis
+                val duration = episode.durationMillis
+                if (engagementTime != null && playbackPosition != null && duration != null) {
+                    episode.watchHistory = WatchItem.WatchHistory(
+                        lastEngagementTimeUtcMillis = engagementTime,
+                        lastPlaybackPositionMillis = playbackPosition,
+                        durationMillis = duration
+                    )
+                }
             }
         },
         database.movieDao().getFavorites(),
@@ -66,6 +101,25 @@ class HomeViewModel(database: AppDatabase) : ViewModel() {
     ) { state, continueWatching, favoritesMovies, favoriteTvShows, moviesDb, tvShowsDb ->
         when (state) {
             is State.SuccessLoading -> {
+                // Log the continueWatching list before creating the category
+                Log.d("HomeViewModel", "[CONTINUE_WATCHING] Items: ${continueWatching.size} -> ${continueWatching.map { it.toString() }}")
+
+                val continueWatchingCategory = Category(
+                    name = Category.CONTINUE_WATCHING,
+                    list = continueWatching
+                        .sortedByDescending {
+                            it.watchHistory?.lastEngagementTimeUtcMillis
+                                ?: it.watchedDate?.timeInMillis
+                        }
+                        .distinctBy {
+                            when (it) {
+                                is Episode -> it.tvShow?.id
+                                is Movie -> it.id
+                                else -> null
+                            }
+                        },
+                )
+
                 val categories = listOfNotNull(
                     state.categories
                         .find { it.name == Category.FEATURED }
@@ -87,20 +141,7 @@ class HomeViewModel(database: AppDatabase) : ViewModel() {
                             )
                         },
 
-                    Category(
-                        name = Category.CONTINUE_WATCHING,
-                        list = continueWatching
-                            .sortedByDescending {
-                                it.watchHistory?.lastEngagementTimeUtcMillis
-                                    ?: it.watchedDate?.timeInMillis
-                            }
-                            .distinctBy {
-                                when (it) {
-                                    is Episode -> it.tvShow?.id
-                                    else -> false
-                                }
-                            },
-                    ),
+                    continueWatchingCategory,
 
                     Category(
                         name = Category.FAVORITE_MOVIES,
@@ -148,7 +189,6 @@ class HomeViewModel(database: AppDatabase) : ViewModel() {
     init {
         getHome()
     }
-
 
     fun getHome() = viewModelScope.launch(Dispatchers.IO) {
         _state.emit(State.Loading)

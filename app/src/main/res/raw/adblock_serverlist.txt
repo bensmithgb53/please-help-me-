@@ -1,0 +1,11 @@
+# Example adblock host list
+# Add more domains as needed
+ads.example.com
+track.example.com
+adservice.google.com
+doubleclick.net
+ad.doubleclick.net
+pagead2.googlesyndication.com
+partner.googleadservices.com
+adclick.g.doubleclick.net
+adview.example.com 
