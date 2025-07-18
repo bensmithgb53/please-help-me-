@@ -151,6 +151,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:shapeAppearanceOverlay="@style/RoundedImageView"
+        app:backgroundTint="@android:color/transparent"
         tools:ignore="ContentDescription"
         tools:src="@drawable/ic_person_placeholder" />
 

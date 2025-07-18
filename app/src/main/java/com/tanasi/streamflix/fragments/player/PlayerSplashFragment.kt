@@ -142,6 +142,30 @@ class PlayerSplashFragment : Fragment() {
             }
             openInWebView(url, sourceId = "vidsrc.net")
         }
+        // Vidsrc.rip
+        binding.btnVidsrcRip.setOnClickListener {
+            val url = when (videoType) {
+                is Video.Type.Movie -> "https://vidsrc.rip/embed/movie/${videoType.id}"
+                is Video.Type.Episode -> "https://vidsrc.rip/embed/tv/${videoType.tvShow.id}/${videoType.season.number}/${videoType.number}"
+            }
+            openInWebView(url, sourceId = "vidsrc.rip")
+        }
+        // Vidjoy.pro
+        binding.btnVidjoyPro.setOnClickListener {
+            val url = when (videoType) {
+                is Video.Type.Movie -> "https://vidjoy.pro/embed/movie/${videoType.id}"
+                is Video.Type.Episode -> "https://vidjoy.pro/embed/tv/${videoType.tvShow.id}/${videoType.season.number}/${videoType.number}"
+            }
+            openInWebView(url, sourceId = "vidjoy.pro")
+        }
+        // filmku
+        binding.btnFilmku.setOnClickListener {
+            val url = when (videoType) {
+                is Video.Type.Movie -> "https://filmku.stream/embed/${videoType.id}"
+                is Video.Type.Episode -> "https://filmku.stream/embed/${videoType.tvShow.id}/${videoType.season.number}/${videoType.number}"
+            }
+            openInWebView(url, sourceId = "filmku")
+        }
     }
 
     private fun openInWebView(url: String, sourceId: String?) {

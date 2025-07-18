@@ -15,6 +15,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:shapeAppearanceOverlay="@style/RoundedImageView"
+        app:backgroundTint="@android:color/transparent"
         tools:clipToOutline="true"
         tools:ignore="ContentDescription"
         tools:src="@drawable/ic_person_placeholder" />

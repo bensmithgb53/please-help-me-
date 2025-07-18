@@ -19,7 +19,44 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:shapeAppearanceOverlay="@style/RoundedImageView"
+        app:backgroundTint="@android:color/transparent"
         tools:ignore="ContentDescription" />
+
+    <!-- Rating Overlay -->
+    <LinearLayout
+        android:id="@+id/ll_tv_show_rating"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/bg_rating_overlay"
+        android:paddingStart="8dp"
+        android:paddingEnd="12dp"
+        android:paddingTop="3dp"
+        android:paddingBottom="3dp"
+        android:gravity="center_vertical"
+        app:layout_constraintBottom_toBottomOf="@id/iv_tv_show_poster"
+        app:layout_constraintEnd_toEndOf="@id/iv_tv_show_poster"
+        android:layout_marginBottom="12dp"
+        android:layout_marginEnd="12dp">
+
+        <ImageView
+            android:id="@+id/iv_rating_star"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_star"
+            android:tint="#FFD700"
+            tools:ignore="ContentDescription" />
+
+        <TextView
+            android:id="@+id/tv_tv_show_rating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="8.2"
+            android:textColor="#FFFFFF"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:layout_marginStart="6dp" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/tv_tv_show_quality"

@@ -20,7 +20,6 @@ import com.tanasi.streamflix.databinding.FragmentTvShowTvBinding
 import com.tanasi.streamflix.models.TvShow
 import com.tanasi.streamflix.utils.viewModelsFactory
 import kotlinx.coroutines.launch
-import android.os.Parcelable
 
 class TvShowTvFragment : Fragment() {
 
@@ -35,8 +34,6 @@ class TvShowTvFragment : Fragment() {
     
     // Flag to prevent infinite auto-navigation loops
     private var hasAutoNavigated = false
-
-    // Removed tvShowListState and lastLoadedId for TV fragment
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -174,18 +171,9 @@ class TvShowTvFragment : Fragment() {
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-        // Removed scroll state restore from here
-    }
-
-    override fun onResume() {
-        super.onResume()
-        // Removed scroll state restore from here
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
+        appAdapter.onSaveInstanceState(binding.vgvTvShow)
         _binding = null
     }
 
@@ -196,7 +184,6 @@ class TvShowTvFragment : Fragment() {
                 stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
             }
             setItemSpacing(80)
-            // Removed adapter-based state restore
         }
     }
 
@@ -206,21 +193,20 @@ class TvShowTvFragment : Fragment() {
             .transition(DrawableTransitionOptions.withCrossFade())
             .into(binding.ivTvShowBanner)
 
-        // Clear focus before updating data
-        binding.vgvTvShow.clearFocus()
-
         appAdapter.submitList(listOfNotNull(
             tvShow.apply { itemType = AppAdapter.Type.TV_SHOW_TV },
+
             tvShow.takeIf { it.seasons.isNotEmpty() }
                 ?.copy()
                 ?.apply { itemType = AppAdapter.Type.TV_SHOW_SEASONS_TV },
+
             tvShow.takeIf { it.cast.isNotEmpty() }
                 ?.copy()
                 ?.apply { itemType = AppAdapter.Type.TV_SHOW_CAST_TV },
+
             tvShow.takeIf { it.recommendations.isNotEmpty() }
                 ?.copy()
                 ?.apply { itemType = AppAdapter.Type.TV_SHOW_RECOMMENDATIONS_TV },
         ))
-        // No scroll state restore for TV
     }
 }

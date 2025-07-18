@@ -218,8 +218,53 @@
                 android:id="@+id/btn_vidsrc_net"
                 android:layout_width="match_parent"
                 android:layout_height="64dp"
+                android:layout_marginBottom="16dp"
                 android:background="@drawable/bg_button_tv_indigo"
                 android:text="Vidsrc.net"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:focusable="true"
+                android:focusableInTouchMode="true" />
+
+            <!-- Spacer between Vidsrc.net and Vidsrc.rip -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="8dp" />
+
+            <!-- Vidsrc.rip -->
+            <Button
+                android:id="@+id/btn_vidsrc_rip"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/bg_button_tv_blue"
+                android:text="Vidsrc.rip"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:focusable="true"
+                android:focusableInTouchMode="true" />
+
+            <!-- Vidjoy.pro -->
+            <Button
+                android:id="@+id/btn_vidjoy_pro"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/bg_button_tv_green"
+                android:text="Vidjoy.pro"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp"
+                android:focusable="true"
+                android:focusableInTouchMode="true" />
+
+            <!-- filmku -->
+            <Button
+                android:id="@+id/btn_filmku"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/bg_button_tv_red"
+                android:text="filmku"
                 android:textColor="#FFFFFF"
                 android:textSize="20sp"
                 android:focusable="true"

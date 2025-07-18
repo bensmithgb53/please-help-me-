@@ -30,6 +30,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:shapeAppearanceOverlay="@style/RoundedImageView"
+        app:backgroundTint="@android:color/transparent"
         tools:ignore="ContentDescription"
         tools:layout_constraintDimensionRatio="2:3"
         tools:layout_height="0dp"

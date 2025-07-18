@@ -150,30 +150,14 @@ class TvShowViewHolder(
             .transition(DrawableTransitionOptions.withCrossFade())
             .into(binding.ivTvShowPoster)
 
-        binding.tvTvShowQuality.apply {
-            text = tvShow.quality ?: ""
-            visibility = when {
-                tvShow.quality.isNullOrEmpty() -> View.GONE
-                else -> View.VISIBLE
-            }
+        // Set rating overlay
+        val rating = tvShow.rating
+        if (rating != null && rating > 0) {
+            binding.llTvShowRating.visibility = View.VISIBLE
+            binding.tvTvShowRating.text = String.format(Locale.US, "%.1f", rating)
+        } else {
+            binding.llTvShowRating.visibility = View.GONE
         }
-
-        binding.tvTvShowLastEpisode.text = tvShow.seasons.lastOrNull()?.let { season ->
-            season.episodes.lastOrNull()?.let { episode ->
-                if (season.number != 0) {
-                    context.getString(
-                        R.string.tv_show_item_season_number_episode_number,
-                        season.number,
-                        episode.number
-                    )
-                } else {
-                    context.getString(
-                        R.string.tv_show_item_episode_number,
-                        episode.number
-                    )
-                }
-            }
-        } ?: context.getString(R.string.tv_show_item_type)
 
         binding.tvTvShowTitle.text = tvShow.title
     }
@@ -233,30 +217,14 @@ class TvShowViewHolder(
             .transition(DrawableTransitionOptions.withCrossFade())
             .into(binding.ivTvShowPoster)
 
-        binding.tvTvShowQuality.apply {
-            text = tvShow.quality ?: ""
-            visibility = when {
-                tvShow.quality.isNullOrEmpty() -> View.GONE
-                else -> View.VISIBLE
-            }
+        // Set rating overlay
+        val rating = tvShow.rating
+        if (rating != null && rating > 0) {
+            binding.llTvShowRating.visibility = View.VISIBLE
+            binding.tvTvShowRating.text = String.format(Locale.US, "%.1f", rating)
+        } else {
+            binding.llTvShowRating.visibility = View.GONE
         }
-
-        binding.tvTvShowLastEpisode.text = tvShow.seasons.lastOrNull()?.let { season ->
-            season.episodes.lastOrNull()?.let { episode ->
-                if (season.number != 0) {
-                    context.getString(
-                        R.string.tv_show_item_season_number_episode_number,
-                        season.number,
-                        episode.number
-                    )
-                } else {
-                    context.getString(
-                        R.string.tv_show_item_episode_number,
-                        episode.number
-                    )
-                }
-            }
-        } ?: context.getString(R.string.tv_show_item_type)
 
         binding.tvTvShowTitle.text = tvShow.title
     }
@@ -334,6 +302,15 @@ class TvShowViewHolder(
         } ?: context.getString(R.string.tv_show_item_type)
 
         binding.tvTvShowTitle.text = tvShow.title
+
+        // Set rating overlay
+        val rating = tvShow.rating
+        if (rating != null && rating > 0) {
+            binding.llTvShowRating.visibility = View.VISIBLE
+            binding.tvTvShowRating.text = String.format(Locale.US, "%.1f", rating)
+        } else {
+            binding.llTvShowRating.visibility = View.GONE
+        }
     }
 
     private fun displayGridTvItem(binding: ItemTvShowGridBinding) {
@@ -418,6 +395,15 @@ class TvShowViewHolder(
         } ?: context.getString(R.string.tv_show_item_type)
 
         binding.tvTvShowTitle.text = tvShow.title
+
+        // Set rating overlay
+        val rating = tvShow.rating
+        if (rating != null && rating > 0) {
+            binding.llTvShowRating.visibility = View.VISIBLE
+            binding.tvTvShowRating.text = String.format(Locale.US, "%.1f", rating)
+        } else {
+            binding.llTvShowRating.visibility = View.GONE
+        }
     }
 
 

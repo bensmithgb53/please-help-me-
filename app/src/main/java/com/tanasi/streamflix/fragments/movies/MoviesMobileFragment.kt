@@ -93,6 +93,7 @@ class MoviesMobileFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        appAdapter.onSaveInstanceState(binding.rvMovies)
         _binding = null
     }
 

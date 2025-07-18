@@ -188,6 +188,15 @@ class MovieViewHolder(
         }
 
         binding.tvMovieTitle.text = movie.title
+
+        // Set rating overlay
+        val rating = movie.rating
+        if (rating != null && rating > 0) {
+            binding.llMovieRating.visibility = View.VISIBLE
+            binding.tvMovieRating.text = String.format(Locale.US, "%.1f", rating)
+        } else {
+            binding.llMovieRating.visibility = View.GONE
+        }
     }
 
     private fun displayTvItem(binding: ItemMovieTvBinding) {
@@ -331,6 +340,15 @@ class MovieViewHolder(
             ?: context.getString(R.string.movie_item_type)
 
         binding.tvMovieTitle.text = movie.title
+
+        // Set rating overlay
+        val rating = movie.rating
+        if (rating != null && rating > 0) {
+            binding.llMovieRating.visibility = View.VISIBLE
+            binding.tvMovieRating.text = String.format(Locale.US, "%.1f", rating)
+        } else {
+            binding.llMovieRating.visibility = View.GONE
+        }
     }
 
     private fun displayGridMobileItem(binding: ItemMovieGridMobileBinding) {
@@ -405,6 +423,15 @@ class MovieViewHolder(
         }
 
         binding.tvMovieTitle.text = movie.title
+
+        // Set rating overlay
+        val rating = movie.rating
+        if (rating != null && rating > 0) {
+            binding.llMovieRating.visibility = View.VISIBLE
+            binding.tvMovieRating.text = String.format(Locale.US, "%.1f", rating)
+        } else {
+            binding.llMovieRating.visibility = View.GONE
+        }
     }
 
     private fun displayGridTvItem(binding: ItemMovieGridTvBinding) {
@@ -488,6 +515,15 @@ class MovieViewHolder(
             ?: context.getString(R.string.movie_item_type)
 
         binding.tvMovieTitle.text = movie.title
+
+        // Set rating overlay
+        val rating = movie.rating
+        if (rating != null && rating > 0) {
+            binding.llMovieRating.visibility = View.VISIBLE
+            binding.tvMovieRating.text = String.format(Locale.US, "%.1f", rating)
+        } else {
+            binding.llMovieRating.visibility = View.GONE
+        }
     }
 
     private fun displaySwiperMobileItem(binding: ItemCategorySwiperMobileBinding) {

@@ -205,9 +205,51 @@
                 android:id="@+id/btn_vidsrc_net"
                 android:layout_width="200dp"
                 android:layout_height="56dp"
+                android:layout_marginBottom="12dp"
                 android:layout_gravity="center"
                 android:background="@drawable/bg_button_indigo"
                 android:text="Vidsrc.net"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp" />
+
+            <!-- Spacer between Vidsrc.net and Vidsrc.rip -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="6dp" />
+
+            <!-- Vidsrc.rip -->
+            <Button
+                android:id="@+id/btn_vidsrc_rip"
+                android:layout_width="200dp"
+                android:layout_height="56dp"
+                android:layout_marginBottom="12dp"
+                android:layout_gravity="center"
+                android:background="@drawable/bg_button_blue"
+                android:text="Vidsrc.rip"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp" />
+
+            <!-- Vidjoy.pro -->
+            <Button
+                android:id="@+id/btn_vidjoy_pro"
+                android:layout_width="200dp"
+                android:layout_height="56dp"
+                android:layout_marginBottom="12dp"
+                android:layout_gravity="center"
+                android:background="@drawable/bg_button_green"
+                android:text="Vidjoy.pro"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp" />
+
+            <!-- filmku -->
+            <Button
+                android:id="@+id/btn_filmku"
+                android:layout_width="200dp"
+                android:layout_height="56dp"
+                android:layout_marginBottom="12dp"
+                android:layout_gravity="center"
+                android:background="@drawable/bg_button_red"
+                android:text="filmku"
                 android:textColor="#FFFFFF"
                 android:textSize="18sp" />
 

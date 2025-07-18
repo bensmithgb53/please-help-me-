@@ -8,22 +8,21 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/cl_search"
-        android:layout_width="0dp"
+        android:layout_width="340dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="80dp"
-        android:layout_marginEnd="80dp"
-        android:background="@drawable/bg_search_edittext"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:background="#222222"
+        android:layout_marginTop="32dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintVertical_bias="0.4">
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/ic_search"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:padding="12dp"
+            android:padding="8dp"
             android:src="@drawable/ic_search"
             android:tint="#FFFFFF"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -34,7 +33,6 @@
 
         <EditText
             android:id="@+id/et_search"
-            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="@android:color/transparent"
             android:gravity="center_vertical"
@@ -42,9 +40,9 @@
             android:imeOptions="actionSearch"
             android:inputType="text"
             android:maxLines="1"
-            android:paddingTop="13dp"
-            android:paddingBottom="13dp"
-            android:textSize="16sp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:textSize="15sp"
             android:textColor="#FFFFFF"
             android:textColorHint="#FFFFFF"
             android:importantForAutofill="no"
@@ -59,7 +57,7 @@
             android:id="@+id/btn_search_clear"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:padding="12dp"
+            android:padding="8dp"
             android:src="@drawable/ic_search_clear"
             android:tint="#FFFFFF"
             app:layout_constraintBottom_toBottomOf="parent"

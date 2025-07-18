@@ -93,6 +93,7 @@ class TvShowsMobileFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        appAdapter.onSaveInstanceState(binding.rvTvShows)
         _binding = null
     }
 

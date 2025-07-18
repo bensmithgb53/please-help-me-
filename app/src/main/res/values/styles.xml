@@ -25,14 +25,4 @@
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">16dp</item>
     </style>
-
-    <style name="PreferenceThemeOverlay" parent="">
-        <item name="defaultBrandColor">#7358FF</item>
-    </style>
-    <style name="PreferenceThemeOverlayLeanback" parent="">
-        <item name="defaultBrandColor">#7358FF</item>
-    </style>
-    <style name="PreferenceThemeOverlayLeanbackBase" parent="">
-        <item name="defaultBrandColor">#7358FF</item>
-    </style>
 </resources> 

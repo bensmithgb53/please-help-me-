@@ -286,30 +286,32 @@ class PlayerWebViewFragment : Fragment() {
             }
         }
         
+        // --- Enhance WebView compatibility for Cloudflare and modern sites ---
         webView.settings.javaScriptEnabled = true
         webView.settings.domStorageEnabled = true
         webView.settings.mediaPlaybackRequiresUserGesture = false
         webView.settings.allowFileAccess = true
         webView.settings.allowContentAccess = true
-        webView.settings.setSupportMultipleWindows(false)
-        webView.settings.userAgentString = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-        
-        // Performance optimizations
-        webView.settings.setRenderPriority(android.webkit.WebSettings.RenderPriority.HIGH)
-        webView.settings.cacheMode = android.webkit.WebSettings.LOAD_DEFAULT
-        webView.settings.databaseEnabled = false
-        webView.settings.setGeolocationEnabled(false)
-        webView.settings.setNeedInitialFocus(false)
-        webView.settings.setSupportZoom(false)
-        webView.settings.builtInZoomControls = false
-        webView.settings.displayZoomControls = false
-        webView.settings.loadWithOverviewMode = false
-        webView.settings.useWideViewPort = false
-        webView.settings.javaScriptCanOpenWindowsAutomatically = false
-        // FIX: Allow images and network resources to load for video playback
+        webView.settings.setSupportMultipleWindows(true) // Allow popups if needed
+        webView.settings.javaScriptCanOpenWindowsAutomatically = true
+        webView.settings.userAgentString = "Mozilla/5.0 (Linux; Android 13; Pixel 7 Pro) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/133.0.0.0 Mobile Safari/537.36"
         webView.settings.loadsImagesAutomatically = true
         webView.settings.blockNetworkImage = false
-        
+        webView.settings.blockNetworkLoads = false
+        webView.settings.mixedContentMode = android.webkit.WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
+        webView.settings.setEnableSmoothTransition(true)
+        webView.settings.cacheMode = android.webkit.WebSettings.LOAD_DEFAULT
+        webView.settings.databaseEnabled = true
+        webView.settings.setGeolocationEnabled(true)
+        webView.settings.setNeedInitialFocus(true)
+        webView.settings.setSupportZoom(true)
+        webView.settings.builtInZoomControls = true
+        webView.settings.displayZoomControls = false
+        webView.settings.loadWithOverviewMode = true
+        webView.settings.useWideViewPort = true
+        // Enable cookies and third-party cookies
+        android.webkit.CookieManager.getInstance().setAcceptCookie(true)
+        android.webkit.CookieManager.getInstance().setAcceptThirdPartyCookies(webView, true)
         // Hardware acceleration
         webView.setLayerType(View.LAYER_TYPE_HARDWARE, null)
         
@@ -983,7 +985,30 @@ class PlayerWebViewFragment : Fragment() {
         if (!foundVideoUrl && mimeType != null && uri != null) {
             foundVideoUrl = true
             videoUrl = uri
-            videoHeaders = headers ?: emptyMap()
+
+            // --- Inject required headers for new sources ---
+            val host = try { android.net.Uri.parse(uri).host?.lowercase() ?: "" } catch (_: Exception) { "" }
+            val customHeaders = when {
+                host.contains("vidjoy.pro") -> mapOf(
+                    "Referer" to "https://vidjoy.pro/",
+                    "Origin" to "https://vidjoy.pro",
+                    "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+                )
+                host.contains("vidsrc.rip") -> mapOf(
+                    "Referer" to "https://vidsrc.rip/",
+                    "Origin" to "https://vidsrc.rip",
+                    "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+                )
+                host.contains("filmku.stream") -> mapOf(
+                    "Referer" to "https://filmku.stream/",
+                    "Origin" to "https://filmku.stream",
+                    "User-Agent" to "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+                )
+                // Add more sources here as needed
+                else -> headers ?: emptyMap()
+            }
+            videoHeaders = customHeaders
+
             Log.d("PlayerWebViewFragment", "[PROCESS_URL] Found video URL: $uri, mimeType: $mimeType")
             Handler(Looper.getMainLooper()).post {
                 onVideoUrlFound(uri, videoHeaders)

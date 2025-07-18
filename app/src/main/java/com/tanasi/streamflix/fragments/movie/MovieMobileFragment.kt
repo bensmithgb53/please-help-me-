@@ -24,7 +24,6 @@ import com.tanasi.streamflix.utils.viewModelsFactory
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
-import android.os.Parcelable
 
 class MovieMobileFragment : Fragment() {
 
@@ -39,8 +38,6 @@ class MovieMobileFragment : Fragment() {
 
     // Flag to prevent infinite auto-navigation loops
     private var hasAutoNavigated = false
-    private var movieListState: Parcelable? = null
-    private var lastLoadedId: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -115,18 +112,9 @@ class MovieMobileFragment : Fragment() {
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-        movieListState = binding.rvMovie.layoutManager?.onSaveInstanceState()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        // Removed scroll state restore from here
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
+        appAdapter.onSaveInstanceState(binding.rvMovie)
         _binding = null
     }
 
@@ -139,16 +127,10 @@ class MovieMobileFragment : Fragment() {
             addItemDecoration(
                 SpacingItemDecoration(20.dp(requireContext()))
             )
-            // Removed adapter-based state restore
         }
     }
 
     private fun displayMovie(movie: Movie) {
-        // Clear scroll state if loading a different movie
-        if (lastLoadedId != movie.id) {
-            movieListState = null
-            lastLoadedId = movie.id
-        }
         Glide.with(requireContext())
             .load(movie.banner)
             .transition(DrawableTransitionOptions.withCrossFade())
@@ -165,14 +147,5 @@ class MovieMobileFragment : Fragment() {
                 ?.copy()
                 ?.apply { itemType = AppAdapter.Type.MOVIE_RECOMMENDATIONS_MOBILE },
         ))
-        // Restore scroll state after data is set, only if valid
-        if (movieListState != null && appAdapter.itemCount > 0) {
-            try {
-                binding.rvMovie.layoutManager?.onRestoreInstanceState(movieListState)
-            } catch (e: Exception) {
-                android.util.Log.w("MovieMobileFragment", "Failed to restore scroll state", e)
-            }
-            movieListState = null
-        }
     }
 }

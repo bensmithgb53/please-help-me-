@@ -22,7 +22,6 @@ import com.tanasi.streamflix.ui.SpacingItemDecoration
 import com.tanasi.streamflix.utils.dp
 import com.tanasi.streamflix.utils.viewModelsFactory
 import kotlinx.coroutines.launch
-import android.os.Parcelable
 
 class TvShowMobileFragment : Fragment() {
 
@@ -37,9 +36,6 @@ class TvShowMobileFragment : Fragment() {
     
     // Flag to prevent infinite auto-navigation loops
     private var hasAutoNavigated = false
-
-    private var tvShowListState: Parcelable? = null
-    private var lastLoadedId: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -176,18 +172,9 @@ class TvShowMobileFragment : Fragment() {
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-        tvShowListState = binding.rvTvShow.layoutManager?.onSaveInstanceState()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        // Removed scroll state restore from here
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
+        appAdapter.onSaveInstanceState(binding.rvTvShow)
         _binding = null
     }
 
@@ -200,16 +187,10 @@ class TvShowMobileFragment : Fragment() {
             addItemDecoration(
                 SpacingItemDecoration(20.dp(requireContext()))
             )
-            // Removed adapter-based state restore
         }
     }
 
     private fun displayTvShow(tvShow: TvShow) {
-        // Clear scroll state if loading a different tvShow
-        if (lastLoadedId != tvShow.id) {
-            tvShowListState = null
-            lastLoadedId = tvShow.id
-        }
         Glide.with(requireContext())
             .load(tvShow.banner)
             .transition(DrawableTransitionOptions.withCrossFade())
@@ -217,24 +198,18 @@ class TvShowMobileFragment : Fragment() {
 
         appAdapter.submitList(listOfNotNull(
             tvShow.apply { itemType = AppAdapter.Type.TV_SHOW_MOBILE },
+
             tvShow.takeIf { it.seasons.isNotEmpty() }
                 ?.copy()
                 ?.apply { itemType = AppAdapter.Type.TV_SHOW_SEASONS_MOBILE },
+
             tvShow.takeIf { it.cast.isNotEmpty() }
                 ?.copy()
                 ?.apply { itemType = AppAdapter.Type.TV_SHOW_CAST_MOBILE },
+
             tvShow.takeIf { it.recommendations.isNotEmpty() }
                 ?.copy()
                 ?.apply { itemType = AppAdapter.Type.TV_SHOW_RECOMMENDATIONS_MOBILE },
         ))
-        // Restore scroll state after data is set, only if valid
-        if (tvShowListState != null && appAdapter.itemCount > 0) {
-            try {
-                binding.rvTvShow.layoutManager?.onRestoreInstanceState(tvShowListState)
-            } catch (e: Exception) {
-                android.util.Log.w("TvShowMobileFragment", "Failed to restore scroll state", e)
-            }
-            tvShowListState = null
-        }
     }
 }

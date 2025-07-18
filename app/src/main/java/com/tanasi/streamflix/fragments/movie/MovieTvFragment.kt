@@ -22,7 +22,6 @@ import com.tanasi.streamflix.utils.viewModelsFactory
 import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Locale
-import android.os.Parcelable
 
 // If you have a format extension, import it here, e.g.:
 // import com.tanasi.streamflix.utils.format
@@ -39,7 +38,8 @@ class MovieTvFragment : Fragment() {
 
     private val appAdapter = AppAdapter()
 
-    // Removed movieListState and lastLoadedId for TV fragment
+    // Flag to prevent infinite auto-navigation loops
+    private var hasAutoNavigated = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -54,7 +54,7 @@ class MovieTvFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // Auto-navigate to PlayerWebViewFragment if lastWatchedUrl is provided (from Continue Watching)
-        if (args.lastWatchedUrl != null) {
+        if (args.lastWatchedUrl != null && !hasAutoNavigated) {
             val movie = database.movieDao().getById(args.id)
             if (movie != null) {
                 // Clear the lastWatchedUrl argument to prevent infinite loops
@@ -76,6 +76,7 @@ class MovieTvFragment : Fragment() {
                         sourceId = args.lastWatchedSourceId
                     )
                 )
+                hasAutoNavigated = true
                 return
             }
         }
@@ -114,18 +115,9 @@ class MovieTvFragment : Fragment() {
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-        // Removed scroll state restore from here
-    }
-
-    override fun onResume() {
-        super.onResume()
-        // Removed scroll state restore from here
-    }
-
     override fun onDestroyView() {
         super.onDestroyView()
+        appAdapter.onSaveInstanceState(binding.vgvMovie)
         _binding = null
     }
 
@@ -136,7 +128,6 @@ class MovieTvFragment : Fragment() {
                 stateRestorationPolicy = RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
             }
             setItemSpacing(80)
-            // Removed adapter-based state restore
         }
     }
 
@@ -145,9 +136,6 @@ class MovieTvFragment : Fragment() {
             .load(movie.banner)
             .transition(DrawableTransitionOptions.withCrossFade())
             .into(binding.ivMovieBanner)
-
-        // Clear focus before updating data
-        binding.vgvMovie.clearFocus()
 
         appAdapter.submitList(listOfNotNull(
             movie.apply { itemType = AppAdapter.Type.MOVIE_TV },
@@ -160,6 +148,5 @@ class MovieTvFragment : Fragment() {
                 ?.copy()
                 ?.apply { itemType = AppAdapter.Type.MOVIE_RECOMMENDATIONS_TV },
         ))
-        // No scroll state restore for TV
     }
 }
