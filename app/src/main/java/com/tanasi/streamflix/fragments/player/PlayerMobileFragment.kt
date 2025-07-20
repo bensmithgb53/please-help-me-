@@ -175,6 +175,10 @@ class PlayerMobileFragment : Fragment() {
             player.setMediaItem(mediaItem)
             player.prepare()
             player.playWhenReady = true
+            // Force landscape if m3u8
+            if (videoUrl.endsWith(".m3u8", ignoreCase = true)) {
+                requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+            }
             // Add error listener for playback failures
             player.addListener(object : Player.Listener {
                 override fun onPlayerError(error: PlaybackException) {
@@ -507,6 +511,11 @@ class PlayerMobileFragment : Fragment() {
                 )
                 .build()
         )
+
+        // Force landscape if m3u8
+        if (video.source.endsWith(".m3u8", ignoreCase = true) || video.type == MimeTypes.APPLICATION_M3U8) {
+            requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+        }
 
         binding.pvPlayer.controller.binding.btnExoExternalPlayer.setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW).apply {

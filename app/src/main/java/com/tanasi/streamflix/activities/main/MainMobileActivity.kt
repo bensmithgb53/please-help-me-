@@ -33,7 +33,7 @@ class MainMobileActivity : FragmentActivity() {
 
     private val viewModel by viewModels<MainViewModel>()
 
-    private lateinit var updateAppDialog: UpdateAppMobileDialog
+    private var updateAppDialog: UpdateAppMobileDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setTheme(R.style.AppTheme_Mobile)
@@ -103,13 +103,13 @@ class MainMobileActivity : FragmentActivity() {
                         }
                     }
 
-                    MainViewModel.State.DownloadingUpdate -> updateAppDialog.isLoading = true
+                    MainViewModel.State.DownloadingUpdate -> updateAppDialog?.isLoading = true
                     is MainViewModel.State.SuccessDownloadingUpdate -> {
                         viewModel.installUpdate(this@MainMobileActivity, state.apk)
-                        updateAppDialog.hide()
+                        updateAppDialog?.hide()
                     }
 
-                    MainViewModel.State.InstallingUpdate -> updateAppDialog.isLoading = true
+                    MainViewModel.State.InstallingUpdate -> updateAppDialog?.isLoading = true
 
                     is MainViewModel.State.FailedUpdate -> {
                         Toast.makeText(
@@ -135,6 +135,12 @@ class MainMobileActivity : FragmentActivity() {
                 }
             }
         })
+    }
+
+    override fun onDestroy() {
+        updateAppDialog?.dismiss()
+        updateAppDialog = null
+        super.onDestroy()
     }
 
     override fun onUserLeaveHint() {
